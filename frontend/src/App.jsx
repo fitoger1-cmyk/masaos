@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [productos, setProductos] = useState([]);
-  const [ventas, setVentas] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
+const [ventas, setVentas] = useState([]);
+const [usuarios, setUsuarios] = useState([]);
+
+const [nuevoNombre, setNuevoNombre] = useState("");
+const [nuevaCategoria, setNuevaCategoria] = useState("");
+const [nuevoPrecio, setNuevoPrecio] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:3000/api/productos")
@@ -18,12 +22,32 @@ function App() {
       .then((res) => res.json())
       .then((data) => setUsuarios(data));
   }, []);
+ const agregarProducto = () => {
+  fetch("http://localhost:3000/api/productos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      nombre: nuevoNombre,
+      categoria: nuevaCategoria,
+      precio: nuevoPrecio
+    })
+  })
+    .then((res) => res.json())
+.then((productoGuardado) => {
+  setProductos([...productos, productoGuardado]);
 
-  return (
-    <div style={{ padding: "30px", fontFamily: "Arial" }}>
-      <h1>🍕 MasaOS</h1>
-      <h2>Panel</h2>
+  setNuevoNombre("");
+  setNuevaCategoria("");
+  setNuevoPrecio("");
+});
+};
 
+return (
+  <div style={{ padding: "30px", fontFamily: "Arial" }}>
+    <h1>🍕 MasaOS</h1>
+    <h2>Panel</h2>
       <div style={{ display: "flex", gap: "20px" }}>
         <div style={{ border: "1px solid #ccc", padding: "20px" }}>
           <h3>Productos</h3>
@@ -42,6 +66,28 @@ function App() {
       </div>
 
       <h2>Productos</h2>
+      <div style={{ marginBottom: "20px" }}>
+  <input
+  placeholder="Nombre del producto"
+  value={nuevoNombre}
+  onChange={(e) => setNuevoNombre(e.target.value)}
+/>
+
+<input
+  placeholder="Categoría"
+  value={nuevaCategoria}
+  onChange={(e) => setNuevaCategoria(e.target.value)}
+/>
+
+<input
+  placeholder="Precio"
+  value={nuevoPrecio}
+  onChange={(e) => setNuevoPrecio(e.target.value)}
+/>
+ <button onClick={agregarProducto}>
+  Agregar producto
+</button>
+</div>
       
 <table border="1" cellPadding="10">
   <thead>
