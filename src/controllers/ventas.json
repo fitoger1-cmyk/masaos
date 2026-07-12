@@ -1,0 +1,286 @@
+[
+  {
+    "id": 1,
+    "cliente": "Juan",
+    "total": 17000,
+    "fecha": "2026-06-23"
+  },
+  {
+    "id": 2,
+    "cliente": "Maria",
+    "total": 12000,
+    "fecha": "2026-06-23"
+  },
+  {
+    "id": 3,
+    "cliente": "",
+    "total": 12000,
+    "fecha": "2026-06-25"
+  },
+  {
+    "id": 4,
+    "cliente": "Mostrador",
+    "total": 12000,
+    "fecha": "2026-06-26"
+  },
+  {
+    "id": 5,
+    "cliente": "Mostrador",
+    "total": 37000,
+    "fecha": "2026-06-26"
+  },
+  {
+    "id": 6,
+    "cliente": "Mostrador",
+    "total": 29000,
+    "fecha": "2026-06-26"
+  },
+  {
+    "id": 7,
+    "cliente": "Mostrador",
+    "total": 29000,
+    "fecha": "2026-06-28"
+  },
+  {
+    "id": 8,
+    "cliente": "Mostrador",
+    "total": 29000,
+    "fecha": "2026-06-28"
+  },
+  {
+    "id": 9,
+    "cliente": "Mostrador",
+    "total": 29000,
+    "fecha": "2026-06-28"
+  },
+  {
+    "id": 10,
+    "cliente": "Mostrador",
+    "total": 29000,
+    "fecha": "2026-06-28"
+  },
+  {
+    "id": 11,
+    "cliente": "Mostrador",
+    "total": 32000,
+    "fecha": "2026-06-28"
+  },
+  {
+    "id": 12,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 12000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 13,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x2",
+    "cantidad": 2,
+    "total": 24000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 14,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 12000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 15,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x4",
+    "cantidad": 4,
+    "total": 68000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 16,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x12",
+    "cantidad": 12,
+    "total": 204000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 17,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x10",
+    "cantidad": 10,
+    "total": 170000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 18,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x10",
+    "cantidad": 10,
+    "total": 170000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 19,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x3",
+    "cantidad": 3,
+    "total": 51000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 20,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x1",
+    "cantidad": 1,
+    "total": 17000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 21,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x1",
+    "cantidad": 1,
+    "total": 17000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 22,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x1",
+    "cantidad": 1,
+    "total": 17000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 23,
+    "cliente": "Mostrador",
+    "producto": "Napolitana Grande x24",
+    "cantidad": 24,
+    "total": 408000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 24,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x13",
+    "cantidad": 13,
+    "total": 156000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 25,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x13",
+    "cantidad": 13,
+    "total": 156000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 26,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x16",
+    "cantidad": 16,
+    "total": 192000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 27,
+    "cliente": "Mostrador",
+    "producto": "fugazzeta especial x11",
+    "cantidad": 11,
+    "total": 198000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 28,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 12000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 29,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 12000,
+    "fecha": "2026-06-29"
+  },
+  {
+    "id": 30,
+    "cliente": "Mostrador",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 12000,
+    "fecha": "2026-07-05"
+  },
+  {
+    "id": 31,
+    "cliente": "marcos",
+    "telefono": "1140480762",
+    "direccion": "pampa 123",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 14000,
+    "formaPago": "Efectivo",
+    "fecha": "2026-07-10"
+  },
+  {
+    "id": 32,
+    "cliente": "juan",
+    "telefono": "1160606060",
+    "direccion": "parana 123",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 14000,
+    "formaPago": "Efectivo",
+    "fecha": "2026-07-10"
+  },
+  {
+    "id": 33,
+    "cliente": "pepe",
+    "telefono": "1234",
+    "direccion": "via",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 14000,
+    "formaPago": "Efectivo",
+    "fecha": "2026-07-10"
+  },
+  {
+    "id": 34,
+    "cliente": "tito",
+    "telefono": "12345678",
+    "direccion": "siempre viva",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 14000,
+    "formaPago": "Efectivo",
+    "fecha": "2026-07-11"
+  },
+  {
+    "id": 35,
+    "cliente": "s",
+    "telefono": "12",
+    "direccion": "we",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 14000,
+    "formaPago": "Efectivo",
+    "fecha": "2026-07-11"
+  },
+  {
+    "id": 36,
+    "cliente": "s",
+    "telefono": "12",
+    "direccion": "ssss",
+    "producto": "Muzzarella Grande x1",
+    "cantidad": 1,
+    "total": 14000,
+    "formaPago": "Efectivo",
+    "fecha": "2026-07-11"
+  }
+]

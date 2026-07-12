@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "proveedor": "santa",
+    "tipoComprobante": "Factura",
+    "numeroComprobante": "12",
+    "items": [
+      {
+        "ingrediente": "Masa",
+        "cantidad": 12,
+        "precio": 12
+      }
+    ],
+    "total": 12,
+    "fecha": "2026-07-05"
+  }
+]

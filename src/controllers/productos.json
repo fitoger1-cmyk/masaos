@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "nombre": "Muzzarella Grande",
+    "categoria": "Pizza",
+    "precio": 14000,
+    "activo": true,
+    "descripcion": "muzzarella",
+    "imagen": "muzzarella.jpg"
+  },
+  {
+    "id": 2,
+    "nombre": "Napolitana Grande",
+    "categoria": "Pizza",
+    "precio": 17000
+  },
+  {
+    "id": 3,
+    "nombre": "Bacon Grande",
+    "categoria": "Pizza",
+    "precio": 20000
+  },
+  {
+    "id": 4,
+    "nombre": "fugazzeta especial",
+    "categoria": "pizza",
+    "precio": 18000,
+    "activo": true
+  },
+  {
+    "id": 5,
+    "nombre": "calabresa grande ",
+    "categoria": "pizza ",
+    "precio": 15000,
+    "activo": true
+  },
+  {
+    "id": 6,
+    "nombre": "fungi y trufa grande ",
+    "categoria": "pizza ",
+    "precio": 20000,
+    "activo": true
+  },
+  {
+    "id": 7,
+    "nombre": "Doble muzzarella ",
+    "categoria": "Pizza",
+    "precio": 16000,
+    "activo": true
+  }
+]
