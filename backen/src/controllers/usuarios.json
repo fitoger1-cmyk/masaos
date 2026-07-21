@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "nombre": "Administrador",
+    "usuario": "admin",
+    "password": "1234",
+    "rol": "administrador",
+    "activo": true,
+    "ultimoLogin": "2026-07-21T17:04:49.640Z"
+  },
+  {
+    "id": 2,
+    "nombre": "Caja",
+    "usuario": "caja",
+    "password": "1234",
+    "rol": "cajero",
+    "activo": true,
+    "ultimoLogin": "2026-07-13T21:33:58.624Z"
+  },
+  {
+    "id": 3,
+    "nombre": "Cocina",
+    "usuario": "cocina",
+    "password": "1234",
+    "rol": "cocina",
+    "activo": true,
+    "ultimoLogin": "2026-07-15T18:54:03.753Z"
+  },
+  {
+    "id": 4,
+    "nombre": "luis",
+    "usuario": "repartidor",
+    "password": "1234",
+    "rol": "delivery",
+    "activo": true,
+    "ultimoLogin": "2026-07-15T21:30:18.377Z"
+  }
+]

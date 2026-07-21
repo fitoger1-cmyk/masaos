@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "nombre": "Repartidor 1",
+    "telefono": "",
+    "vehiculo": "Moto",
+    "patente": "",
+    "estado": "Disponible",
+    "activo": true,
+    "entregas": 1,
+    "tiempoPromedio": 1,
+    "observaciones": "",
+    "fechaCreacion": "2026-07-15T00:00:00.000Z",
+    "fechaActualizacion": "2026-07-15T21:46:19.995Z",
+    "ultimaEntrega": "2026-07-15T21:46:19.995Z"
+  },
+  {
+    "id": 2,
+    "nombre": "Repartidor 2",
+    "telefono": "",
+    "vehiculo": "Moto",
+    "patente": "",
+    "estado": "Disponible",
+    "activo": true,
+    "entregas": 0,
+    "tiempoPromedio": 0,
+    "observaciones": "",
+    "fechaCreacion": "2026-07-15T00:00:00.000Z",
+    "fechaActualizacion": "2026-07-15T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "nombre": "luis",
+    "telefono": "12345",
+    "vehiculo": "Moto",
+    "patente": "ADF",
+    "estado": "Disponible",
+    "activo": true,
+    "entregas": 2,
+    "tiempoPromedio": 7,
+    "observaciones": "",
+    "fechaCreacion": "2026-07-15T21:47:42.550Z",
+    "fechaActualizacion": "2026-07-20T03:51:39.816Z",
+    "ultimaEntrega": "2026-07-20T03:51:39.816Z"
+  }
+]

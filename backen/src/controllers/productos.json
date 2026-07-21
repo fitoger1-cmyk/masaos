@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "nombre": "Muzzarella Grande",
+    "categoria": "Pizza",
+    "precio": 14000,
+    "descripcion": "Pizza de muzzarella",
+    "imagen": "muzzarella.jpg",
+    "activo": true
+  },
+  {
+    "id": 2,
+    "nombre": "Napolitana Grande",
+    "categoria": "Pizza",
+    "precio": 17000,
+    "descripcion": "Pizza napolitana",
+    "imagen": "",
+    "activo": true
+  },
+  {
+    "id": 3,
+    "nombre": "Bacon Grande",
+    "categoria": "Pizza",
+    "precio": 20000,
+    "descripcion": "Pizza de bacon",
+    "imagen": "",
+    "activo": true
+  },
+  {
+    "id": 4,
+    "nombre": "Fugazzeta Especial",
+    "categoria": "Pizza",
+    "precio": 18000,
+    "descripcion": "Pizza fugazzeta especial",
+    "imagen": "",
+    "activo": true
+  },
+  {
+    "id": 5,
+    "nombre": "Calabresa Grande",
+    "categoria": "Pizza",
+    "precio": 15000,
+    "descripcion": "Pizza calabresa",
+    "imagen": "",
+    "activo": true
+  },
+  {
+    "id": 6,
+    "nombre": "Fungi y Trufa Grande",
+    "categoria": "Pizza",
+    "precio": 20000,
+    "descripcion": "Pizza de hongos y trufa",
+    "imagen": "",
+    "activo": true
+  },
+  {
+    "id": 7,
+    "nombre": "Doble Muzzarella",
+    "categoria": "Pizza",
+    "precio": 16000,
+    "descripcion": "Pizza doble muzzarella",
+    "imagen": "",
+    "activo": true
+  },
+  {
+    "id": 8,
+    "nombre": "Milano Braseado",
+    "categoria": "Focaccia",
+    "precio": 10000,
+    "descripcion": "Sándwich de focaccia con roast beef braseado",
+    "imagen": "",
+    "activo": true
+  }
+]

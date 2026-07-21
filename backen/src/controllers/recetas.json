@@ -1,0 +1,78 @@
+[
+  {
+    "id": 1,
+    "productoId": 1,
+    "producto": "Muzzarella Grande",
+    "ingredientes": [
+      {
+        "ingrediente": "Masa",
+        "cantidad": 1,
+        "unidad": "unidad"
+      },
+      {
+        "ingrediente": "Mozzarella",
+        "cantidad": 0.3,
+        "unidad": "kg"
+      },
+      {
+        "ingrediente": "Salsa",
+        "cantidad": 0.03,
+        "unidad": "kg"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "productoId": 2,
+    "producto": "Napolitana Grande",
+    "ingredientes": [
+      {
+        "ingrediente": "Masa",
+        "cantidad": 1,
+        "unidad": "unidad"
+      },
+      {
+        "ingrediente": "Mozzarella",
+        "cantidad": 0.2,
+        "unidad": "kg"
+      },
+      {
+        "ingrediente": "Salsa",
+        "cantidad": 0.03,
+        "unidad": "kg"
+      },
+      {
+        "ingrediente": "Tomate",
+        "cantidad": 0.2,
+        "unidad": "kg"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "productoId": 3,
+    "producto": "Bacon Grande",
+    "ingredientes": [
+      {
+        "ingrediente": "Masa",
+        "cantidad": 1,
+        "unidad": "unidad"
+      },
+      {
+        "ingrediente": "Mozzarella",
+        "cantidad": 0.2,
+        "unidad": "kg"
+      },
+      {
+        "ingrediente": "Salsa",
+        "cantidad": 0.03,
+        "unidad": "kg"
+      },
+      {
+        "ingrediente": "Jamón",
+        "cantidad": 0.15,
+        "unidad": "kg"
+      }
+    ]
+  }
+]

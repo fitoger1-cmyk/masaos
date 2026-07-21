@@ -1,23 +1,7 @@
 [
   {
     "id": 1,
-    "nombre": "La Paulina",
-    "telefono": "",
-    "email": "",
-    "contacto": ""
-  },
-  {
-    "id": 2,
-    "nombre": "Distribuidora Pilar",
-    "telefono": "",
-    "email": "",
-    "contacto": ""
-  },
-  {
-    "id": 3,
-    "nombre": "Frigorífico San Miguel",
-    "telefono": "",
-    "email": "",
-    "contacto": ""
+    "nombre": "Santa Elina",
+    "telefono": ""
   }
 ]
