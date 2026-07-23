@@ -159,6 +159,15 @@ app.get("/", (req, res) => {
     estado: "Activo",
   });
 });
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    ok: true,
+    sistema: "MasaOS Enterprise",
+    servicio: "API",
+    estado: "online",
+    fechaHora: new Date().toISOString(),
+  });
+});
 
 app.get("/api/health", (req, res) => {
   res.json({
@@ -584,11 +593,10 @@ app.post("/api/login", (req, res) => {
     },
   });
 });
-console.log("===== MasaOS v2 =====");
+console.log("===== MASAOS ENTERPRISE API =====");
 
 const PORT = process.env.PORT || 3000;
 
-servidorHttp.listen(PORT, () => {
-  console.log(`MasaOS corriendo en puerto ${PORT}`);
-  console.log("Tiempo real activo con Socket.IO");
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`MasaOS Enterprise API corriendo en puerto ${PORT}`);
 });
