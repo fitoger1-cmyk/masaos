@@ -1,5 +1,3 @@
-export const API_URL = "http://localhost:3000/api";
-
 export const ESTADOS_COCINA = [
   "Nuevo",
   "Preparando",

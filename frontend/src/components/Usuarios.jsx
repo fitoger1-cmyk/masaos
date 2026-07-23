@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../config/api";
 
 function Usuarios({ usuarios, setUsuarios }) {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -41,7 +42,7 @@ function Usuarios({ usuarios, setUsuarios }) {
 
     try {
       const respuesta = await fetch(
-        "http://localhost:3000/api/usuarios",
+        `${API_URL}/usuarios`,
         {
           method: "POST",
           headers: {

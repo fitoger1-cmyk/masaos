@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
-const API_URL = "http://localhost:3000/api";
-const BACKEND_URL = "http://localhost:3000";
+import {
+  API_URL,
+  SOCKET_URL,
+} from "../config/api";
 
 const configuracionInicial = {
   nombre: "",
@@ -92,7 +94,7 @@ function ConfiguracionWeb() {
       return imagen;
     }
 
-    return `${BACKEND_URL}${
+    return `${SOCKET_URL}${
       imagen.startsWith("/") ? imagen : `/${imagen}`
     }`;
   }

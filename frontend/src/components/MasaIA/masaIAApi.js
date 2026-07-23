@@ -1,5 +1,9 @@
+import {
+  API_URL as BASE_API_URL,
+} from "../../config/api";
+
 const API_URL =
-  "http://localhost:3000/api/masaia";
+  `${BASE_API_URL}/masaia`;
 
 async function leerRespuesta(respuesta) {
   const contenido = await respuesta.json();

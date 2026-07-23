@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:3000/api";
 
 function formatearMoneda(valor) {
   return Number(valor || 0).toLocaleString("es-AR", {

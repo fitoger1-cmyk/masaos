@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../config/api";
 
 function Recetas({ recetas }) {
   const [recetaEditando, setRecetaEditando] = useState(null);
@@ -31,7 +32,7 @@ function Recetas({ recetas }) {
 
   async function guardarReceta() {
     const respuesta = await fetch(
-      `http://localhost:3000/api/recetas/${recetaEditando.id}`,
+      `${API_URL}/recetas/${recetaEditando.id}`,
       {
         method: "PUT",
         headers: {

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../config/api";
 
 function Compras({ stock, setStock }) {
   const [proveedor, setProveedor] = useState("");
@@ -48,7 +49,7 @@ function Compras({ stock, setStock }) {
       return;
     }
 
-    fetch("http://localhost:3000/api/compras", {
+    fetch(`${API_URL}/compras`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +70,7 @@ function Compras({ stock, setStock }) {
 
         return res.json();
       })
-      .then(() => fetch("http://localhost:3000/api/stock"))
+      .then(() => fetch(`${API_URL}/stock`))
       .then((res) => res.json())
       .then((stockActualizado) => {
         setStock(stockActualizado);

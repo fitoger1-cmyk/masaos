@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
+import {
+  API_URL,
+  SOCKET_URL,
+} from "../config/api";
 
 const API_REPARTIDORES =
-  "http://localhost:3000/api/repartidores";
+  `${API_URL}/repartidores`;
 
 const FORMULARIO_INICIAL = {
   nombre: "",
@@ -51,7 +55,7 @@ function Repartidores() {
   }, []);
 
   useEffect(() => {
-    const socket = io("http://localhost:3000", {
+    const socket = io(SOCKET_URL, {
       transports: ["websocket", "polling"],
     });
 

@@ -7,16 +7,14 @@
 } from "react";
 
 import { io } from "socket.io-client";
+import {
+  API_URL,
+  SOCKET_URL,
+} from "../config/api";
 
 import CocinaColumna from "./Cocina/CocinaColumna";
 import CocinaToolbar from "./Cocina/CocinaToolbar";
 
-import {
-  API_URL,
-  ESTADOS_COCINA,
-  obtenerFechaPedido,
-  ordenarPedidos,
-} from "./Cocina/helpers";
 
 function Cocina() {
   const [pedidos, setPedidos] = useState([]);
@@ -193,7 +191,7 @@ function Cocina() {
   }, [cargarPedidos]);
 
   useEffect(() => {
-    const socket = io("http://localhost:3000", {
+    const socket = io(SOCKET_URL, {
       transports: ["websocket", "polling"],
     });
 

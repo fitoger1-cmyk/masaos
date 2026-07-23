@@ -1,7 +1,9 @@
 import { useState } from "react";
+import {
+  API_URL,
+  SOCKET_URL,
+} from "../config/api";
 
-const API_URL = "http://localhost:3000/api";
-const BACKEND_URL = "http://localhost:3000";
 
 function Productos({
   productos = [],
@@ -29,26 +31,25 @@ function Productos({
     });
   }
 
-  function obtenerUrlImagen(imagen) {
-    if (!imagen) {
-      return "";
-    }
-
-    if (
-      imagen.startsWith("http://") ||
-      imagen.startsWith("https://") ||
-      imagen.startsWith("blob:")
-    ) {
-      return imagen;
-    }
-
-    if (imagen.startsWith("/")) {
-      return `${BACKEND_URL}${imagen}`;
-    }
-
-    return `${BACKEND_URL}/uploads/productos/${imagen}`;
+ function obtenerUrlImagen(imagen) {
+  if (!imagen) {
+    return "";
   }
 
+  if (
+    imagen.startsWith("http://") ||
+    imagen.startsWith("https://") ||
+    imagen.startsWith("blob:")
+  ) {
+    return imagen;
+  }
+
+  if (imagen.startsWith("/")) {
+    return `${SOCKET_URL}${imagen}`;
+  }
+
+  return `${SOCKET_URL}/uploads/productos/${imagen}`;
+}
   async function subirImagenProducto(archivo) {
     if (!archivo) {
       return;

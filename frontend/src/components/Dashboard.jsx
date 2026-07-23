@@ -8,6 +8,7 @@ import TopProductos from "./Dashboard/TopProductos";
 import VentasChart from "./Dashboard/VentasChart";
 import { calcularDashboard } from "./Dashboard/helpers";
 import GerenteVirtualCard from "./GerenteVirtualCard";
+import { API_URL } from "../config/api";
 
 function Dashboard({
   usuarioLogueado,
@@ -43,7 +44,7 @@ function Dashboard({
   async function cargarRecomendaciones() {
     try {
       const respuesta = await fetch(
-        "http://localhost:3000/api/masaia/recomendaciones"
+        `${API_URL}/masaia/recomendaciones`
       );
 
       if (!respuesta.ok) {

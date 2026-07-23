@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+import { API_URL } from "../config/api";
 
 export async function preguntarMasaIA(pregunta) {
   const respuesta = await fetch(`${API_URL}/masaia/preguntar`, {

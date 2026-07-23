@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../config/api";
 
 function Login({ onLogin }) {
   const [formulario, setFormulario] = useState({
@@ -26,7 +27,7 @@ function Login({ onLogin }) {
 
     try {
       const respuesta = await fetch(
-        "http://localhost:3000/api/login",
+        `${API_URL}/login`,
         {
           method: "POST",
           headers: {

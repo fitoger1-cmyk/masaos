@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
+import {
+  API_URL,
+  SOCKET_URL,
+} from "../config/api";
 
-const API_VENTAS = "http://localhost:3000/api/ventas";
-const API_REPARTIDORES = "http://localhost:3000/api/repartidores";
+const API_VENTAS = `${API_URL}/ventas`;
+const API_REPARTIDORES = `${API_URL}/repartidores`;
 
 function Delivery() {
   const [pedidos, setPedidos] = useState([]);
@@ -26,7 +30,7 @@ function Delivery() {
   }, []);
 
   useEffect(() => {
-    const socket = io("http://localhost:3000", {
+    const socket = io(SOCKET_URL, {
       transports: ["websocket", "polling"],
     });
 

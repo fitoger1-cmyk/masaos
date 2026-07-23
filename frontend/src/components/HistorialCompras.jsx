@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../config/api";
 
 function HistorialCompras() {
   const [compras, setCompras] = useState([]);
   const [compraAbierta, setCompraAbierta] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/compras")
+    fetch(`${API_URL}/compras`)
       .then((res) => res.json())
       .then((data) => setCompras(Array.isArray(data) ? data : []))
       .catch(() => alert("No se pudo cargar el historial de compras"));

@@ -1,4 +1,4 @@
-export const API_URL = "http://localhost:3000/api";
+export { API_URL } from "../../config/api";
 
 export function normalizarTexto(valor = "") {
   return String(valor)

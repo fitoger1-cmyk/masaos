@@ -12,8 +12,8 @@ import CentroDecisiones from "./Dashboard/CentroDecisiones";
 import HeaderEnterprise from "./Dashboard/HeaderEnterprise";
 import LiveStatusBar from "./Dashboard/LiveStatusBar";
 import CentroActividad from "./Dashboard/CentroActividad";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:3000/api";
 
 function obtenerSaludo() {
   const hora = new Date().getHours();
