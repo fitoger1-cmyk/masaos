@@ -26,6 +26,7 @@ const origenesPermitidos = [
   "http://localhost:5500",
   "http://127.0.0.1:5500",
   "https://club-masa-web.vercel.app",
+  "https://masaos-enterprise-panel.onrender.com",
 ];
 
 const configuracionCors = {
