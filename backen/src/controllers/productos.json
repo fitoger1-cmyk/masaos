@@ -5,7 +5,7 @@
     "categoria": "Pizza",
     "precio": 14000,
     "descripcion": "Pizza de muzzarella",
-    "imagen": "muzzarella.jpg",
+    "imagen": "/uploads/productos/producto-chatgpt-image-9-jul-2026-05-35-21-p.m.-1784686317541.png",
     "activo": true
   },
   {
@@ -14,7 +14,7 @@
     "categoria": "Pizza",
     "precio": 17000,
     "descripcion": "Pizza napolitana",
-    "imagen": "",
+    "imagen": "https://res.cloudinary.com/aobqmtmm/image/upload/v1784822850/masaos/productos/e6oex2dv1mtyygatp2vf.jpg",
     "activo": true
   },
   {
@@ -23,7 +23,7 @@
     "categoria": "Pizza",
     "precio": 20000,
     "descripcion": "Pizza de bacon",
-    "imagen": "",
+    "imagen": "https://res.cloudinary.com/aobqmtmm/image/upload/v1784823484/masaos/productos/md1jr2zmpkmy8v3ibkqm.jpg",
     "activo": true
   },
   {
@@ -32,7 +32,7 @@
     "categoria": "Pizza",
     "precio": 18000,
     "descripcion": "Pizza fugazzeta especial",
-    "imagen": "",
+    "imagen": "https://res.cloudinary.com/aobqmtmm/image/upload/v1784824530/masaos/productos/abqfsm8xcjug2qaefniu.jpg",
     "activo": true
   },
   {
@@ -41,7 +41,7 @@
     "categoria": "Pizza",
     "precio": 15000,
     "descripcion": "Pizza calabresa",
-    "imagen": "",
+    "imagen": "https://res.cloudinary.com/aobqmtmm/image/upload/v1784825035/masaos/productos/gqzqxqptkkk8mzha9xh6.jpg",
     "activo": true
   },
   {

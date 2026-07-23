@@ -1,85 +1,318 @@
-import { useState } from "react";
+    import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-function Caja({ productos, setVentas, setStock, setClientes }) {
+import CatalogoProductos from "./Caja/CatalogoProductos";
+import PedidoActual from "./Caja/PedidoActual";
+import PedidosEnEspera from "./Caja/PedidosEnEspera";
+import ProductoModal from "./Caja/ProductoModal";
+
+import {
+  API_URL,
+  escaparHTML,
+  formatearDinero,
+  normalizarTexto,
+} from "./Caja/formatos";
+
+function Caja({
+  productos = [],
+  setVentas,
+  setStock,
+  setClientes,
+}) {
   const [carrito, setCarrito] = useState([]);
-  const [formaPago, setFormaPago] = useState("Efectivo");
-  const [montoRecibido, setMontoRecibido] = useState("");
-  const [ultimaVenta, setUltimaVenta] = useState(null);
+  const [formaPago, setFormaPago] =
+    useState("Efectivo");
+  const [montoRecibido, setMontoRecibido] =
+    useState("");
+  const [ultimaVenta, setUltimaVenta] =
+    useState(null);
   const [cobrando, setCobrando] = useState(false);
 
-  const [nombreCliente, setNombreCliente] = useState("");
-  const [telefonoCliente, setTelefonoCliente] = useState("");
-  const [direccionCliente, setDireccionCliente] = useState("");
+  const [nombreCliente, setNombreCliente] =
+    useState("");
+  const [telefonoCliente, setTelefonoCliente] =
+    useState("");
+  const [direccionCliente, setDireccionCliente] =
+    useState("");
+  const [tipoPedido, setTipoPedido] =
+    useState("Retiro");
+  const [numeroMesa, setNumeroMesa] = useState("");
+  const [observaciones, setObservaciones] =
+    useState("");
 
-  const totalPedido = carrito.reduce(
-    (total, producto) =>
-      total + Number(producto.precio) * Number(producto.cantidad),
+  const [busqueda, setBusqueda] = useState("");
+  const [
+    categoriaSeleccionada,
+    setCategoriaSeleccionada,
+  ] = useState("Todas");
+
+  const [descuentoTipo, setDescuentoTipo] =
+    useState("Porcentaje");
+  const [descuentoValor, setDescuentoValor] =
+    useState("");
+
+  const [pedidosEnEspera, setPedidosEnEspera] =
+    useState([]);
+
+  const [productoSeleccionado, setProductoSeleccionado] =
+    useState(null);
+
+  const buscadorRef = useRef(null);
+
+  const productosActivos = useMemo(
+    () =>
+      productos.filter(
+        (producto) => producto.activo !== false
+      ),
+    [productos]
+  );
+
+  const categorias = useMemo(() => {
+    const mapaCategorias = new Map();
+
+    productosActivos.forEach((producto) => {
+      const categoria =
+        String(producto.categoria || "Otros").trim() ||
+        "Otros";
+
+      const clave = normalizarTexto(categoria);
+
+      if (!mapaCategorias.has(clave)) {
+        mapaCategorias.set(clave, categoria);
+      }
+    });
+
+    return ["Todas", ...mapaCategorias.values()];
+  }, [productosActivos]);
+
+  const productosFiltrados = useMemo(() => {
+    const textoBuscado = normalizarTexto(busqueda);
+    const categoriaBuscada =
+      normalizarTexto(categoriaSeleccionada);
+
+    return productosActivos.filter((producto) => {
+      const categoriaProducto = normalizarTexto(
+        producto.categoria || "Otros"
+      );
+
+      const coincideCategoria =
+        categoriaSeleccionada === "Todas" ||
+        categoriaProducto === categoriaBuscada;
+
+      const contenido = normalizarTexto(
+        `${producto.nombre || ""} ${
+          producto.descripcion || ""
+        } ${producto.categoria || ""}`
+      );
+
+      return (
+        coincideCategoria &&
+        contenido.includes(textoBuscado)
+      );
+    });
+  }, [
+    productosActivos,
+    busqueda,
+    categoriaSeleccionada,
+  ]);
+
+  const subtotal = useMemo(
+    () =>
+      carrito.reduce(
+        (total, producto) =>
+          total +
+          Number(producto.precio || 0) *
+            Number(producto.cantidad || 0),
+        0
+      ),
+    [carrito]
+  );
+
+  const descuento = useMemo(() => {
+    const valor = Math.max(
+      Number(descuentoValor || 0),
+      0
+    );
+
+    if (descuentoTipo === "Porcentaje") {
+      return Math.min(
+        (subtotal * valor) / 100,
+        subtotal
+      );
+    }
+
+    return Math.min(valor, subtotal);
+  }, [descuentoTipo, descuentoValor, subtotal]);
+
+  const totalPedido = Math.max(
+    subtotal - descuento,
     0
   );
 
   const vuelto =
     formaPago === "Efectivo"
-      ? Math.max(Number(montoRecibido || 0) - totalPedido, 0)
+      ? Math.max(
+          Number(montoRecibido || 0) -
+            totalPedido,
+          0
+        )
       : 0;
 
-  function agregarAlCarrito(producto) {
-    setCarrito((carritoActual) => {
-      const productoExistente = carritoActual.find(
-        (item) => item.id === producto.id
-      );
+  const cantidadArticulos = carrito.reduce(
+    (total, producto) =>
+      total + Number(producto.cantidad || 0),
+    0
+  );
 
-      if (productoExistente) {
-        return carritoActual.map((item) =>
-          item.id === producto.id
-            ? { ...item, cantidad: item.cantidad + 1 }
-            : item
-        );
-      }
-
-      return [
-        ...carritoActual,
-        {
-          id: producto.id,
-          nombre: producto.nombre,
-          precio: Number(producto.precio),
-          cantidad: 1,
-        },
-      ];
-    });
+  function seleccionarProducto(producto) {
+    setProductoSeleccionado(producto);
   }
 
-  function aumentarCantidad(idProducto) {
-    setCarrito((carritoActual) =>
-      carritoActual.map((producto) =>
-        producto.id === idProducto
-          ? { ...producto, cantidad: producto.cantidad + 1 }
+  const cerrarProductoModal = useCallback(() => {
+    setProductoSeleccionado(null);
+  }, []);
+
+  function agregarProductoConfigurado({
+    producto,
+    cantidad,
+    observacion,
+  }) {
+    const carritoId = `${producto.id}-${Date.now()}-${Math.random()
+      .toString(16)
+      .slice(2)}`;
+
+    setUltimaVenta(null);
+
+    setCarrito((carritoActual) => [
+      ...carritoActual,
+      {
+        carritoId,
+        id: producto.id,
+        nombre: producto.nombre,
+        categoria: producto.categoria || "Otros",
+        precio: Number(producto.precio || 0),
+        imagen: producto.imagen || "",
+        cantidad: Number(cantidad || 1),
+        observacion: String(observacion || "").trim(),
+      },
+    ]);
+
+    cerrarProductoModal();
+  }
+
+  function aumentarCantidad(carritoId) {
+    setCarrito((actual) =>
+      actual.map((producto) =>
+        producto.carritoId === carritoId
+          ? {
+              ...producto,
+              cantidad: producto.cantidad + 1,
+            }
           : producto
       )
     );
   }
 
-  function disminuirCantidad(idProducto) {
-    setCarrito((carritoActual) =>
-      carritoActual
+  function disminuirCantidad(carritoId) {
+    setCarrito((actual) =>
+      actual
         .map((producto) =>
-          producto.id === idProducto
-            ? { ...producto, cantidad: producto.cantidad - 1 }
+          producto.carritoId === carritoId
+            ? {
+                ...producto,
+                cantidad: producto.cantidad - 1,
+              }
             : producto
         )
         .filter((producto) => producto.cantidad > 0)
     );
   }
 
-  function quitarDelCarrito(idProducto) {
-    setCarrito((carritoActual) =>
-      carritoActual.filter((producto) => producto.id !== idProducto)
+  function quitarDelCarrito(carritoId) {
+    setCarrito((actual) =>
+      actual.filter(
+        (producto) => producto.carritoId !== carritoId
+      )
     );
   }
 
-  async function cobrar() {
+  function actualizarObservacionProducto(
+    carritoId,
+    nuevaObservacion
+  ) {
+    setCarrito((actual) =>
+      actual.map((producto) =>
+        producto.carritoId === carritoId
+          ? {
+              ...producto,
+              observacion: nuevaObservacion,
+            }
+          : producto
+      )
+    );
+  }
+
+  const limpiarPedido = useCallback(() => {
+    setCarrito([]);
+    setFormaPago("Efectivo");
+    setMontoRecibido("");
+    setNombreCliente("");
+    setTelefonoCliente("");
+    setDireccionCliente("");
+    setTipoPedido("Retiro");
+    setNumeroMesa("");
+    setObservaciones("");
+    setDescuentoTipo("Porcentaje");
+    setDescuentoValor("");
+  }, []);
+
+  function nuevaVenta() {
+    setUltimaVenta(null);
+    limpiarPedido();
+  }
+
+  function cambiarTipoPedido(nuevoTipo) {
+    setTipoPedido(nuevoTipo);
+
+    if (nuevoTipo !== "Delivery") {
+      setDireccionCliente("");
+    }
+
+    if (nuevoTipo !== "Mesa") {
+      setNumeroMesa("");
+    }
+  }
+
+  function cambiarFormaPago(nuevaForma) {
+    setFormaPago(nuevaForma);
+    setMontoRecibido("");
+  }
+
+  function validarPedido() {
     if (carrito.length === 0) {
       alert("No hay productos en el pedido.");
-      return;
+      return false;
+    }
+
+    if (
+      tipoPedido === "Delivery" &&
+      !direccionCliente.trim()
+    ) {
+      alert("Ingresá la dirección del delivery.");
+      return false;
+    }
+
+    if (
+      tipoPedido === "Mesa" &&
+      !numeroMesa.trim()
+    ) {
+      alert("Ingresá el número de mesa.");
+      return false;
     }
 
     if (
@@ -87,97 +320,335 @@ function Caja({ productos, setVentas, setStock, setClientes }) {
       Number(montoRecibido || 0) < totalPedido
     ) {
       alert("El monto recibido es menor al total.");
+      return false;
+    }
+
+    return true;
+  }
+
+  function crearResumenProductos(items) {
+    return items
+      .map((producto) => {
+        const detalle =
+          `${producto.nombre} x${producto.cantidad}`;
+
+        return producto.observacion?.trim()
+          ? `${detalle} (${producto.observacion.trim()})`
+          : detalle;
+      })
+      .join(", ");
+  }
+
+  async function actualizarDatosRelacionados() {
+    try {
+      const respuestaStock = await fetch(
+        `${API_URL}/stock`
+      );
+
+      if (respuestaStock.ok) {
+        const stockActualizado =
+          await respuestaStock.json();
+
+        if (
+          Array.isArray(stockActualizado) &&
+          typeof setStock === "function"
+        ) {
+          setStock(stockActualizado);
+        }
+      }
+    } catch (error) {
+      console.warn(
+        "No se pudo actualizar el stock:",
+        error
+      );
+    }
+
+    if (typeof setClientes === "function") {
+      try {
+        const respuestaClientes = await fetch(
+          `${API_URL}/clientes`
+        );
+
+        if (respuestaClientes.ok) {
+          const clientesActualizados =
+            await respuestaClientes.json();
+
+          if (Array.isArray(clientesActualizados)) {
+            setClientes(clientesActualizados);
+          }
+        }
+      } catch (error) {
+        console.warn(
+          "No se pudieron actualizar los clientes:",
+          error
+        );
+      }
+    }
+  }
+
+  const cobrar = useCallback(async () => {
+    if (cobrando || !validarPedido()) {
       return;
     }
 
-    const productosVendidos = carrito
-      .map((producto) => `${producto.nombre} x${producto.cantidad}`)
-      .join(", ");
+    const productosDelTicket = carrito.map(
+      (producto) => ({ ...producto })
+    );
 
     const ventaParaGuardar = {
-      cliente: nombreCliente.trim() || "Mostrador",
+      cliente:
+        nombreCliente.trim() || "Mostrador",
       telefono: telefonoCliente.trim(),
-      direccion: direccionCliente.trim(),
-      producto: productosVendidos,
-      cantidad: carrito.reduce(
-        (total, producto) => total + producto.cantidad,
-        0
+      tipoPedido,
+      direccion:
+        tipoPedido === "Delivery"
+          ? direccionCliente.trim()
+          : "",
+      numeroMesa:
+        tipoPedido === "Mesa"
+          ? numeroMesa.trim()
+          : "",
+      observaciones: observaciones.trim(),
+      producto: crearResumenProductos(
+        productosDelTicket
+      ),
+      productos: productosDelTicket,
+      subtotal,
+      descuento,
+      descuentoTipo,
+      descuentoValor: Number(
+        descuentoValor || 0
       ),
       total: totalPedido,
       formaPago,
       montoRecibido:
-        formaPago === "Efectivo" ? Number(montoRecibido || 0) : totalPedido,
+        formaPago === "Efectivo"
+          ? Number(montoRecibido || 0)
+          : totalPedido,
       vuelto,
+      estado: "Nuevo",
     };
 
     try {
       setCobrando(true);
 
-      const respuesta = await fetch("http://localhost:3000/api/ventas", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(ventaParaGuardar),
-      });
+      const respuesta = await fetch(
+        `${API_URL}/ventas`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(ventaParaGuardar),
+        }
+      );
 
-      const datos = await respuesta.json();
+      const textoRespuesta =
+        await respuesta.text();
 
-      if (!respuesta.ok) {
-        throw new Error(datos.error || "No se pudo registrar la venta.");
+      let datos = {};
+
+      try {
+        datos = textoRespuesta
+          ? JSON.parse(textoRespuesta)
+          : {};
+      } catch {
+        datos = {};
       }
 
-      const productosDelTicket = carrito.map((producto) => ({
-        ...producto,
-      }));
+      if (!respuesta.ok) {
+        throw new Error(
+          datos.error ||
+            textoRespuesta ||
+            "No se pudo registrar la venta."
+        );
+      }
 
-      setVentas((ventasActuales) => [...ventasActuales, datos]);
+      if (typeof setVentas === "function") {
+        setVentas((ventasActuales) => [
+          ...ventasActuales,
+          datos,
+        ]);
+      }
 
       setUltimaVenta({
         ...ventaParaGuardar,
-        id: datos.id,
-        fecha: datos.fecha || new Date().toISOString().split("T")[0],
+        ...datos,
+        id: datos.id ?? ventaParaGuardar.id,
+        fecha:
+          datos.fecha || new Date().toISOString(),
         productos: productosDelTicket,
       });
 
       setCarrito([]);
       setMontoRecibido("");
+      setDescuentoValor("");
 
-      const respuestaStock = await fetch("http://localhost:3000/api/stock");
-      const stockActualizado = await respuestaStock.json();
-
-      if (Array.isArray(stockActualizado)) {
-        setStock(stockActualizado);
-      }
-
-      if (setClientes) {
-        const respuestaClientes = await fetch(
-          "http://localhost:3000/api/clientes"
-        );
-        const clientesActualizados = await respuestaClientes.json();
-
-        if (Array.isArray(clientesActualizados)) {
-          setClientes(clientesActualizados);
-        }
-      }
+      await actualizarDatosRelacionados();
 
       alert("Venta cobrada correctamente.");
     } catch (error) {
-      console.error("Error registrando venta:", error);
-      alert(error.message);
+      console.error(
+        "Error registrando venta:",
+        error
+      );
+
+      alert(
+        error.message ||
+          "Ocurrió un error al registrar la venta."
+      );
     } finally {
       setCobrando(false);
     }
+  }, [
+    cobrando,
+    carrito,
+    nombreCliente,
+    telefonoCliente,
+    tipoPedido,
+    direccionCliente,
+    numeroMesa,
+    observaciones,
+    subtotal,
+    descuento,
+    descuentoTipo,
+    descuentoValor,
+    totalPedido,
+    formaPago,
+    montoRecibido,
+    vuelto,
+    setVentas,
+    setStock,
+    setClientes,
+  ]);
+
+  useEffect(() => {
+    function manejarAtajos(evento) {
+      if (evento.key === "F2") {
+        evento.preventDefault();
+        buscadorRef.current?.focus();
+      }
+
+      if (evento.key === "F5") {
+        evento.preventDefault();
+        cobrar();
+      }
+
+      if (evento.key === "Escape") {
+        evento.preventDefault();
+
+        if (
+          carrito.length > 0 &&
+          window.confirm(
+            "¿Vaciar el pedido actual?"
+          )
+        ) {
+          limpiarPedido();
+        }
+      }
+    }
+
+    window.addEventListener(
+      "keydown",
+      manejarAtajos
+    );
+
+    return () =>
+      window.removeEventListener(
+        "keydown",
+        manejarAtajos
+      );
+  }, [carrito.length, cobrar, limpiarPedido]);
+
+  function ponerPedidoEnEspera() {
+    if (carrito.length === 0) {
+      alert(
+        "No hay productos para poner en espera."
+      );
+      return;
+    }
+
+    const pedido = {
+      id: Date.now(),
+      nombre:
+        nombreCliente.trim() ||
+        `Pedido ${pedidosEnEspera.length + 1}`,
+      creado: new Date().toLocaleTimeString(
+        "es-AR",
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      ),
+      carrito: carrito.map((producto) => ({
+        ...producto,
+      })),
+      formaPago,
+      montoRecibido,
+      nombreCliente,
+      telefonoCliente,
+      direccionCliente,
+      tipoPedido,
+      numeroMesa,
+      observaciones,
+      descuentoTipo,
+      descuentoValor,
+    };
+
+    setPedidosEnEspera((actuales) => [
+      ...actuales,
+      pedido,
+    ]);
+
+    limpiarPedido();
   }
 
-  function nuevaVenta() {
+  function recuperarPedido(pedido) {
+    if (carrito.length > 0) {
+      const reemplazar = window.confirm(
+        "Hay un pedido en curso. ¿Querés reemplazarlo?"
+      );
+
+      if (!reemplazar) {
+        return;
+      }
+    }
+
+    setCarrito(pedido.carrito);
+    setFormaPago(pedido.formaPago);
+    setMontoRecibido(pedido.montoRecibido);
+    setNombreCliente(pedido.nombreCliente);
+    setTelefonoCliente(pedido.telefonoCliente);
+    setDireccionCliente(pedido.direccionCliente);
+    setTipoPedido(pedido.tipoPedido);
+    setNumeroMesa(pedido.numeroMesa);
+    setObservaciones(pedido.observaciones);
+    setDescuentoTipo(pedido.descuentoTipo);
+    setDescuentoValor(pedido.descuentoValor);
+
+    setPedidosEnEspera((actuales) =>
+      actuales.filter(
+        (item) => item.id !== pedido.id
+      )
+    );
+
     setUltimaVenta(null);
-    setCarrito([]);
-    setFormaPago("Efectivo");
-    setMontoRecibido("");
-    setNombreCliente("");
-    setTelefonoCliente("");
-    setDireccionCliente("");
+  }
+
+  function eliminarPedidoEnEspera(idPedido) {
+    if (
+      !window.confirm(
+        "¿Eliminar este pedido en espera?"
+      )
+    ) {
+      return;
+    }
+
+    setPedidosEnEspera((actuales) =>
+      actuales.filter(
+        (pedido) => pedido.id !== idPedido
+      )
+    );
   }
 
   function imprimirTicket() {
@@ -193,121 +664,118 @@ function Caja({ productos, setVentas, setStock, setClientes }) {
     );
 
     if (!ventanaTicket) {
-      alert("El navegador bloqueó la ventana de impresión.");
+      alert(
+        "El navegador bloqueó la ventana de impresión."
+      );
       return;
     }
 
-    const productosHTML = (ultimaVenta.productos || [])
+    const productosHTML = (
+      ultimaVenta.productos || []
+    )
       .map(
         (producto) => `
           <div class="fila-producto">
-            <div>
-              ${producto.cantidad}x ${producto.nombre}
-            </div>
-
-            <div>
-              $${(
-                Number(producto.precio) * Number(producto.cantidad)
-              ).toLocaleString("es-AR")}
-            </div>
+            <span>
+              ${Number(producto.cantidad)}x
+              ${escaparHTML(producto.nombre)}
+            </span>
+            <span>
+              $${formatearDinero(
+                Number(producto.precio) *
+                  Number(producto.cantidad)
+              )}
+            </span>
           </div>
 
           <div class="precio-unitario">
-            $${Number(producto.precio).toLocaleString("es-AR")} c/u
+            $${formatearDinero(
+              producto.precio
+            )} c/u
           </div>
+
+          ${
+            producto.observacion
+              ? `
+                <div class="observacion">
+                  Obs.: ${escaparHTML(
+                    producto.observacion
+                  )}
+                </div>
+              `
+              : ""
+          }
         `
       )
       .join("");
 
-    const fechaTicket = new Date().toLocaleString("es-AR");
+    const fechaTicket = ultimaVenta.fecha
+      ? new Date(
+          ultimaVenta.fecha
+        ).toLocaleString("es-AR")
+      : new Date().toLocaleString("es-AR");
 
     ventanaTicket.document.write(`
       <!DOCTYPE html>
       <html lang="es">
         <head>
           <meta charset="UTF-8" />
-
-          <title>Ticket ${ultimaVenta.id || ""}</title>
+          <title>
+            Ticket ${escaparHTML(
+              ultimaVenta.id || ""
+            )}
+          </title>
 
           <style>
-            * {
-              box-sizing: border-box;
-            }
-
+            * { box-sizing: border-box; }
             body {
               width: 80mm;
               margin: 0;
               padding: 5mm;
               background: white;
               color: black;
-              font-family: Arial, Helvetica, sans-serif;
+              font-family: Arial, sans-serif;
               font-size: 13px;
             }
-
-            .ticket {
-              width: 100%;
-            }
-
-            .encabezado {
-              text-align: center;
-            }
-
+            .encabezado,
+            .pie { text-align: center; }
             .encabezado h1 {
               margin: 0;
               font-size: 21px;
             }
-
-            .encabezado p {
-              margin: 3px 0;
-            }
-
             .separador {
               border-top: 1px dashed black;
               margin: 9px 0;
             }
-
-            .dato {
-              margin: 4px 0;
-            }
-
-            .fila-producto {
-              display: flex;
-              justify-content: space-between;
-              gap: 10px;
-              margin-top: 7px;
-              font-weight: bold;
-            }
-
-            .precio-unitario {
-              margin-top: 2px;
-              font-size: 11px;
-            }
-
+            .dato { margin: 4px 0; }
+            .fila-producto,
             .fila-total {
               display: flex;
               justify-content: space-between;
               gap: 10px;
+            }
+            .fila-producto {
+              margin-top: 7px;
+              font-weight: bold;
+            }
+            .precio-unitario,
+            .observacion {
+              font-size: 11px;
+              margin-top: 2px;
+            }
+            .observacion {
+              font-style: italic;
+            }
+            .fila-total {
+              margin: 8px 0;
               font-size: 19px;
               font-weight: bold;
-              margin: 8px 0;
             }
-
-            .pie {
-              text-align: center;
-              margin-top: 12px;
-            }
-
-            .pie h2 {
-              margin: 4px 0;
-              font-size: 16px;
-            }
-
             @media print {
               @page {
                 size: 80mm auto;
                 margin: 0;
               }
-
               body {
                 width: 80mm;
                 padding: 4mm;
@@ -317,92 +785,129 @@ function Caja({ productos, setVentas, setStock, setClientes }) {
         </head>
 
         <body>
-          <div class="ticket">
-            <div class="encabezado">
-              <h1>El Club de la Masa G</h1>
-              <p>Pilar</p>
-              <p>WhatsApp: 11 4048-0762</p>
-            </div>
+          <div class="encabezado">
+            <h1>El Club de la Masa G</h1>
+            <p>Pilar</p>
+            <p>WhatsApp: 11 4048-0762</p>
+          </div>
 
-            <div class="separador"></div>
+          <div class="separador"></div>
 
-            <div class="dato">
-              <strong>Ticket:</strong> ${ultimaVenta.id || "-"}
-            </div>
+          <div class="dato">
+            <strong>Ticket:</strong>
+            ${escaparHTML(ultimaVenta.id || "-")}
+          </div>
 
-            <div class="dato">
-              <strong>Fecha:</strong> ${fechaTicket}
-            </div>
+          <div class="dato">
+            <strong>Fecha:</strong>
+            ${escaparHTML(fechaTicket)}
+          </div>
 
-            <div class="dato">
-              <strong>Cliente:</strong>
-              ${ultimaVenta.cliente || "Mostrador"}
-            </div>
+          <div class="dato">
+            <strong>Cliente:</strong>
+            ${escaparHTML(
+              ultimaVenta.cliente || "Mostrador"
+            )}
+          </div>
 
-            ${
-              ultimaVenta.telefono
-                ? `
-                  <div class="dato">
-                    <strong>Teléfono:</strong>
-                    ${ultimaVenta.telefono}
-                  </div>
-                `
-                : ""
-            }
+          ${
+            ultimaVenta.telefono
+              ? `
+                <div class="dato">
+                  <strong>Teléfono:</strong>
+                  ${escaparHTML(
+                    ultimaVenta.telefono
+                  )}
+                </div>
+              `
+              : ""
+          }
 
-            ${
-              ultimaVenta.direccion
-                ? `
-                  <div class="dato">
-                    <strong>Dirección:</strong>
-                    ${ultimaVenta.direccion}
-                  </div>
-                `
-                : ""
-            }
+          ${
+            ultimaVenta.direccion
+              ? `
+                <div class="dato">
+                  <strong>Dirección:</strong>
+                  ${escaparHTML(
+                    ultimaVenta.direccion
+                  )}
+                </div>
+              `
+              : ""
+          }
 
-            <div class="separador"></div>
+          ${
+            ultimaVenta.numeroMesa
+              ? `
+                <div class="dato">
+                  <strong>Mesa:</strong>
+                  ${escaparHTML(
+                    ultimaVenta.numeroMesa
+                  )}
+                </div>
+              `
+              : ""
+          }
 
-            ${productosHTML}
+          <div class="separador"></div>
+          ${productosHTML}
+          <div class="separador"></div>
 
-            <div class="separador"></div>
+          <div class="fila-total">
+            <span>TOTAL</span>
+            <span>
+              $${formatearDinero(
+                ultimaVenta.total
+              )}
+            </span>
+          </div>
 
-            <div class="fila-total">
-              <span>TOTAL</span>
-              <span>
-                $${Number(ultimaVenta.total).toLocaleString("es-AR")}
-              </span>
-            </div>
+          <div class="dato">
+            <strong>Forma de pago:</strong>
+            ${escaparHTML(
+              ultimaVenta.formaPago
+            )}
+          </div>
 
-            <div class="dato">
-              <strong>Forma de pago:</strong>
-              ${ultimaVenta.formaPago}
-            </div>
+          ${
+            ultimaVenta.formaPago === "Efectivo"
+              ? `
+                <div class="dato">
+                  <strong>Recibido:</strong>
+                  $${formatearDinero(
+                    ultimaVenta.montoRecibido
+                  )}
+                </div>
 
-            ${
-              ultimaVenta.formaPago === "Efectivo"
-                ? `
-                  <div class="dato">
-                    <strong>Recibido:</strong>
-                    $${Number(
-                      ultimaVenta.montoRecibido
-                    ).toLocaleString("es-AR")}
-                  </div>
+                <div class="dato">
+                  <strong>Vuelto:</strong>
+                  $${formatearDinero(
+                    ultimaVenta.vuelto
+                  )}
+                </div>
+              `
+              : ""
+          }
 
-                  <div class="dato">
-                    <strong>Vuelto:</strong>
-                    $${Number(ultimaVenta.vuelto).toLocaleString("es-AR")}
-                  </div>
-                `
-                : ""
-            }
+          ${
+            ultimaVenta.observaciones
+              ? `
+                <div class="separador"></div>
+                <div class="dato">
+                  <strong>Observaciones:</strong>
+                  ${escaparHTML(
+                    ultimaVenta.observaciones
+                  )}
+                </div>
+              `
+              : ""
+          }
 
-            <div class="separador"></div>
+          <div class="separador"></div>
 
-            <div class="pie">
-              <h2>¡Gracias por tu compra!</h2>
-              <p>El Club de la Masa G</p>
-            </div>
+          <div class="pie">
+            <h2>¡Gracias por tu compra!</h2>
+            <p>El Club de la Masa G</p>
           </div>
 
           <script>
@@ -422,221 +927,105 @@ function Caja({ productos, setVentas, setStock, setClientes }) {
   }
 
   return (
-    <section className="section">
-      <h2>💵 Caja</h2>
-
-      <div className="caja-layout">
+    <section className="section caja-pro">
+      <div className="caja-pro-encabezado">
         <div>
-          <h3>Productos disponibles</h3>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {productos
-                .filter((producto) => producto.activo !== false)
-                .map((producto) => (
-                  <tr key={producto.id}>
-                    <td>{producto.nombre}</td>
-
-                    <td>
-                      ${" "}
-                      {Number(producto.precio).toLocaleString("es-AR")}
-                    </td>
-
-                    <td>
-                      <button
-                        type="button"
-                        onClick={() => agregarAlCarrito(producto)}
-                      >
-                        Agregar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <h2>💵 Caja PRO</h2>
+          <p>
+            F2 buscar · F5 cobrar · ESC vaciar pedido
+          </p>
         </div>
 
-        <div className="ticket">
-          <h3>🛒 Pedido</h3>
-
-          <label>Nombre del cliente</label>
-          <input
-            value={nombreCliente}
-            onChange={(event) => setNombreCliente(event.target.value)}
-            placeholder="Mostrador o nombre"
-          />
-
-          <label>Teléfono</label>
-          <input
-            value={telefonoCliente}
-            onChange={(event) => setTelefonoCliente(event.target.value)}
-            placeholder="Ejemplo: 11 4048-0762"
-          />
-
-          <label>Dirección</label>
-          <input
-            value={direccionCliente}
-            onChange={(event) => setDireccionCliente(event.target.value)}
-            placeholder="Dirección para delivery"
-          />
-
-          {carrito.length === 0 && (
-            <p>No hay productos agregados.</p>
-          )}
-
-          {carrito.map((producto) => (
-            <div className="ticket-item" key={producto.id}>
-              <div>
-                <strong>{producto.nombre}</strong>
-
-                <p>
-                  ${Number(producto.precio).toLocaleString("es-AR")} x{" "}
-                  {producto.cantidad}
-                </p>
-
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => disminuirCantidad(producto.id)}
-                  >
-                    ➖
-                  </button>
-
-                  <span style={{ margin: "0 10px" }}>
-                    {producto.cantidad}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={() => aumentarCantidad(producto.id)}
-                  >
-                    ➕
-                  </button>
-                </div>
-              </div>
-
-              <strong>
-                ${" "}
-                {(
-                  Number(producto.precio) *
-                  Number(producto.cantidad)
-                ).toLocaleString("es-AR")}
-              </strong>
-
-              <button
-                type="button"
-                onClick={() => quitarDelCarrito(producto.id)}
-              >
-                ❌
-              </button>
-            </div>
-          ))}
-
-          <hr />
-
-          <h2>
-            Total: $ {totalPedido.toLocaleString("es-AR")}
-          </h2>
-
-          <label>Forma de pago</label>
-
-          <select
-            value={formaPago}
-            onChange={(event) => setFormaPago(event.target.value)}
-          >
-            <option value="Efectivo">Efectivo</option>
-            <option value="Mercado Pago">Mercado Pago</option>
-            <option value="Tarjeta">Tarjeta</option>
-            <option value="Transferencia">Transferencia</option>
-          </select>
-
-          {formaPago === "Efectivo" && (
-            <>
-              <label>Monto recibido</label>
-
-              <input
-                type="number"
-                value={montoRecibido}
-                onChange={(event) =>
-                  setMontoRecibido(event.target.value)
-                }
-                placeholder="Ejemplo: 30000"
-              />
-
-              <p>
-                Vuelto: $ {vuelto.toLocaleString("es-AR")}
-              </p>
-            </>
-          )}
-
-          <button
-            type="button"
-            onClick={cobrar}
-            disabled={carrito.length === 0 || cobrando}
-          >
-            {cobrando ? "Procesando..." : "Cobrar"}
-          </button>
-
-          {ultimaVenta && (
-            <div className="ticket-final">
-              <h3>✅ Venta realizada</h3>
-
-              <p>Cliente: {ultimaVenta.cliente}</p>
-
-              {ultimaVenta.telefono && (
-                <p>Teléfono: {ultimaVenta.telefono}</p>
-              )}
-
-              {ultimaVenta.direccion && (
-                <p>Dirección: {ultimaVenta.direccion}</p>
-              )}
-
-              <p>
-                Total: ${" "}
-                {Number(ultimaVenta.total).toLocaleString("es-AR")}
-              </p>
-
-              <p>Pago: {ultimaVenta.formaPago}</p>
-
-              {ultimaVenta.formaPago === "Efectivo" && (
-                <>
-                  <p>
-                    Recibido: ${" "}
-                    {Number(
-                      ultimaVenta.montoRecibido
-                    ).toLocaleString("es-AR")}
-                  </p>
-
-                  <p>
-                    Vuelto: ${" "}
-                    {Number(
-                      ultimaVenta.vuelto
-                    ).toLocaleString("es-AR")}
-                  </p>
-                </>
-              )}
-
-              <button type="button" onClick={imprimirTicket}>
-                🖨️ Imprimir boleto
-              </button>
-
-              <button type="button" onClick={nuevaVenta}>
-                Nueva venta
-              </button>
-            </div>
-          )}
+        <div className="caja-pro-resumen">
+          <span>{cantidadArticulos} artículos</span>
+          <strong>
+            $ {formatearDinero(totalPedido)}
+          </strong>
         </div>
       </div>
+
+      <div className="caja-layout">
+        <div className="caja-productos-panel">
+          <CatalogoProductos
+            buscadorRef={buscadorRef}
+            busqueda={busqueda}
+            setBusqueda={setBusqueda}
+            categorias={categorias}
+            categoriaSeleccionada={
+              categoriaSeleccionada
+            }
+            setCategoriaSeleccionada={
+              setCategoriaSeleccionada
+            }
+            productosFiltrados={
+              productosFiltrados
+            }
+            seleccionarProducto={seleccionarProducto}
+          />
+
+          <PedidosEnEspera
+            pedidos={pedidosEnEspera}
+            recuperarPedido={recuperarPedido}
+            eliminarPedido={
+              eliminarPedidoEnEspera
+            }
+          />
+        </div>
+
+        <PedidoActual
+          carrito={carrito}
+          nombreCliente={nombreCliente}
+          setNombreCliente={setNombreCliente}
+          telefonoCliente={telefonoCliente}
+          setTelefonoCliente={setTelefonoCliente}
+          direccionCliente={direccionCliente}
+          setDireccionCliente={setDireccionCliente}
+          tipoPedido={tipoPedido}
+          cambiarTipoPedido={cambiarTipoPedido}
+          numeroMesa={numeroMesa}
+          setNumeroMesa={setNumeroMesa}
+          observaciones={observaciones}
+          setObservaciones={setObservaciones}
+          aumentarCantidad={aumentarCantidad}
+          disminuirCantidad={disminuirCantidad}
+          quitarDelCarrito={quitarDelCarrito}
+          actualizarObservacionProducto={
+            actualizarObservacionProducto
+          }
+          descuentoTipo={descuentoTipo}
+          setDescuentoTipo={setDescuentoTipo}
+          descuentoValor={descuentoValor}
+          setDescuentoValor={setDescuentoValor}
+          subtotal={subtotal}
+          descuento={descuento}
+          totalPedido={totalPedido}
+          formaPago={formaPago}
+          cambiarFormaPago={cambiarFormaPago}
+          montoRecibido={montoRecibido}
+          setMontoRecibido={setMontoRecibido}
+          vuelto={vuelto}
+          ponerPedidoEnEspera={
+            ponerPedidoEnEspera
+          }
+          cobrar={cobrar}
+          cobrando={cobrando}
+          ultimaVenta={ultimaVenta}
+          imprimirTicket={imprimirTicket}
+          nuevaVenta={nuevaVenta}
+        />
+      </div>
+
+      {productoSeleccionado && (
+        <ProductoModal
+          producto={productoSeleccionado}
+          onCerrar={cerrarProductoModal}
+          onConfirmar={agregarProductoConfigurado}
+        />
+      )}
     </section>
   );
 }
 
 export default Caja;
+
+    

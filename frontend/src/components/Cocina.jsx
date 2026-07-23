@@ -1,80 +1,267 @@
-import { useEffect, useRef, useState } from "react";
+    import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
+import { io } from "socket.io-client";
+
+import CocinaColumna from "./Cocina/CocinaColumna";
+import CocinaToolbar from "./Cocina/CocinaToolbar";
+
+import {
+  API_URL,
+  ESTADOS_COCINA,
+  obtenerFechaPedido,
+  ordenarPedidos,
+} from "./Cocina/helpers";
 
 function Cocina() {
   const [pedidos, setPedidos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
-  const cantidadPedidosAnterior = useRef(0);
+  const [horaActual, setHoraActual] = useState(
+    Date.now()
+  );
+  const [sonidoActivo, setSonidoActivo] =
+    useState(true);
+  const [pantallaCompleta, setPantallaCompleta] =
+    useState(Boolean(document.fullscreenElement));
+  const [cambiandoPedidoId, setCambiandoPedidoId] =
+    useState(null);
 
-  async function cargarPedidos() {
-    try {
-      const respuesta = await fetch("http://localhost:3000/api/ventas");
+  const idsPedidosAnteriores = useRef(new Set());
+  const primeraCarga = useRef(true);
 
-      if (!respuesta.ok) {
-        throw new Error("No se pudieron cargar los pedidos.");
-      }
-
-      const datos = await respuesta.json();
-
-      if (!Array.isArray(datos)) {
-        setPedidos([]);
-        return;
-      }
-
-      const pedidosActivos = datos
-        .filter((pedido) => {
-          const estado = pedido.estado || "Nuevo";
-          return estado !== "Entregado" && estado !== "Cancelado";
-        })
-        .sort((a, b) => Number(a.id) - Number(b.id));
-
-      if (
-        cantidadPedidosAnterior.current !== 0 &&
-        pedidosActivos.length > cantidadPedidosAnterior.current
-      ) {
-        reproducirSonido();
-      }
-
-      cantidadPedidosAnterior.current = pedidosActivos.length;
-
-      setPedidos(pedidosActivos);
-      setError("");
-    } catch (errorCarga) {
-      console.error("Error cargando pedidos:", errorCarga);
-      setError(errorCarga.message);
-    } finally {
-      setCargando(false);
+  const reproducirSonido = useCallback(() => {
+    if (!sonidoActivo) {
+      return;
     }
-  }
 
-  useEffect(() => {
-    cargarPedidos();
-
-    const intervalo = setInterval(() => {
-      cargarPedidos();
-    }, 5000);
-
-    return () => clearInterval(intervalo);
-  }, []);
-
-  function reproducirSonido() {
     try {
-      const audio = new Audio(
-        "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVYGAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA"
+      const contexto = new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+      const oscilador =
+        contexto.createOscillator();
+      const ganancia = contexto.createGain();
+
+      oscilador.type = "sine";
+      oscilador.frequency.setValueAtTime(
+        880,
+        contexto.currentTime
       );
 
-      audio.play().catch(() => {
-        // Algunos navegadores bloquean audio automático.
+      ganancia.gain.setValueAtTime(
+        0.001,
+        contexto.currentTime
+      );
+      ganancia.gain.exponentialRampToValueAtTime(
+        0.18,
+        contexto.currentTime + 0.02
+      );
+      ganancia.gain.exponentialRampToValueAtTime(
+        0.001,
+        contexto.currentTime + 0.35
+      );
+
+      oscilador.connect(ganancia);
+      ganancia.connect(contexto.destination);
+
+      oscilador.start();
+      oscilador.stop(
+        contexto.currentTime + 0.36
+      );
+
+      oscilador.addEventListener("ended", () => {
+        contexto.close();
       });
     } catch (errorAudio) {
-      console.error("No se pudo reproducir el sonido:", errorAudio);
+      console.warn(
+        "No se pudo reproducir el sonido:",
+        errorAudio
+      );
     }
-  }
+  }, [sonidoActivo]);
 
-  async function cambiarEstado(pedido, nuevoEstado) {
+  const cargarPedidos = useCallback(
+    async (mostrarCarga = false) => {
+      try {
+        if (mostrarCarga) {
+          setCargando(true);
+        }
+
+        const respuesta = await fetch(
+          `${API_URL}/ventas`
+        );
+
+        if (!respuesta.ok) {
+          throw new Error(
+            "No se pudieron cargar los pedidos."
+          );
+        }
+
+        const datos = await respuesta.json();
+
+        if (!Array.isArray(datos)) {
+          throw new Error(
+            "La respuesta de ventas no es válida."
+          );
+        }
+
+        const pedidosActivos = datos
+          .filter((pedido) => {
+            if (
+              !pedido.producto &&
+              !Array.isArray(pedido.productos)
+            ) {
+              return false;
+            }
+
+            return ESTADOS_COCINA.includes(
+              pedido.estado || "Nuevo"
+            );
+          })
+          .sort((a, b) => {
+            const fechaA =
+              obtenerFechaPedido(a)?.getTime() || 0;
+            const fechaB =
+              obtenerFechaPedido(b)?.getTime() || 0;
+
+            if (fechaA !== fechaB) {
+              return fechaA - fechaB;
+            }
+
+            return Number(a.id) - Number(b.id);
+          });
+
+        const idsActuales = new Set(
+          pedidosActivos.map((pedido) =>
+            String(pedido.id)
+          )
+        );
+
+        if (!primeraCarga.current) {
+          const hayPedidoNuevo =
+            pedidosActivos.some(
+              (pedido) =>
+                !idsPedidosAnteriores.current.has(
+                  String(pedido.id)
+                )
+            );
+
+          if (hayPedidoNuevo) {
+            reproducirSonido();
+          }
+        }
+
+        primeraCarga.current = false;
+        idsPedidosAnteriores.current =
+          idsActuales;
+
+        setPedidos(pedidosActivos);
+        setError("");
+      } catch (errorCarga) {
+        console.error(
+          "Error cargando pedidos:",
+          errorCarga
+        );
+
+        setError(errorCarga.message);
+      } finally {
+        setCargando(false);
+      }
+    },
+    [reproducirSonido]
+  );
+
+  useEffect(() => {
+    cargarPedidos(true);
+
+    // Respaldo por si se interrumpe la conexión en tiempo real.
+    const intervaloPedidos = setInterval(
+      () => cargarPedidos(false),
+      30000
+    );
+
+    return () =>
+      clearInterval(intervaloPedidos);
+  }, [cargarPedidos]);
+
+  useEffect(() => {
+    const socket = io("http://localhost:3000", {
+      transports: ["websocket", "polling"],
+    });
+
+    socket.on("connect", () => {
+      console.log("Cocina conectada en tiempo real.");
+    });
+
+    socket.on("venta:nueva", () => {
+      cargarPedidos(false);
+    });
+
+    socket.on("venta:estado", () => {
+      cargarPedidos(false);
+    });
+
+    socket.on("connect_error", (errorSocket) => {
+      console.warn(
+        "Tiempo real no disponible. Se usará actualización de respaldo:",
+        errorSocket.message
+      );
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [cargarPedidos]);
+
+  useEffect(() => {
+    const intervaloReloj = setInterval(() => {
+      setHoraActual(Date.now());
+    }, 1000);
+
+    return () =>
+      clearInterval(intervaloReloj);
+  }, []);
+
+  useEffect(() => {
+    function actualizarPantallaCompleta() {
+      setPantallaCompleta(
+        Boolean(document.fullscreenElement)
+      );
+    }
+
+    document.addEventListener(
+      "fullscreenchange",
+      actualizarPantallaCompleta
+    );
+
+    return () =>
+      document.removeEventListener(
+        "fullscreenchange",
+        actualizarPantallaCompleta
+      );
+  }, []);
+
+  async function cambiarEstado(
+    pedido,
+    nuevoEstado
+  ) {
+    if (cambiandoPedidoId !== null) {
+      return;
+    }
+
     try {
+      setCambiandoPedidoId(pedido.id);
+
       const respuesta = await fetch(
-        `http://localhost:3000/api/ventas/${pedido.id}/estado`,
+        `${API_URL}/ventas/${pedido.id}/estado`,
         {
           method: "PUT",
           headers: {
@@ -86,11 +273,24 @@ function Cocina() {
         }
       );
 
-      const datos = await respuesta.json();
+      const textoRespuesta =
+        await respuesta.text();
+
+      let datos = {};
+
+      try {
+        datos = textoRespuesta
+          ? JSON.parse(textoRespuesta)
+          : {};
+      } catch {
+        datos = {};
+      }
 
       if (!respuesta.ok) {
         throw new Error(
-          datos.error || "No se pudo actualizar el pedido."
+          datos.error ||
+            textoRespuesta ||
+            "No se pudo actualizar el pedido."
         );
       }
 
@@ -101,15 +301,20 @@ function Cocina() {
               ? {
                   ...item,
                   estado: nuevoEstado,
+                  fechaActualizacion:
+                    datos.fechaActualizacion ||
+                    new Date().toISOString(),
                 }
               : item
           )
-          .filter(
-            (item) =>
-              item.estado !== "Entregado" &&
-              item.estado !== "Cancelado"
+          .filter((item) =>
+            ESTADOS_COCINA.includes(
+              item.estado || "Nuevo"
+            )
           )
       );
+
+      setError("");
     } catch (errorActualizacion) {
       console.error(
         "Error actualizando estado:",
@@ -117,210 +322,102 @@ function Cocina() {
       );
 
       alert(errorActualizacion.message);
+    } finally {
+      setCambiandoPedidoId(null);
     }
   }
 
-  function obtenerEstado(pedido) {
-    return pedido.estado || "Nuevo";
-  }
+  async function alternarPantallaCompleta() {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (errorPantalla) {
+      console.error(
+        "No se pudo cambiar la pantalla completa:",
+        errorPantalla
+      );
 
-  function obtenerClaseEstado(estado) {
-    switch (estado) {
-      case "Preparando":
-        return "pedido-preparando";
-
-      case "Listo":
-        return "pedido-listo";
-
-      default:
-        return "pedido-nuevo";
+      alert(
+        "El navegador no permitió activar la pantalla completa."
+      );
     }
   }
 
-  function obtenerTextoProductos(pedido) {
-    if (Array.isArray(pedido.productos)) {
-      return pedido.productos.map((producto, indice) => (
-        <div key={`${pedido.id}-${producto.id || indice}`}>
-          <strong>
-            {producto.cantidad}x {producto.nombre}
-          </strong>
-        </div>
-      ));
-    }
+  const pedidosPorEstado = useMemo(() => {
+    return ESTADOS_COCINA.reduce(
+      (resultado, estado) => {
+        resultado[estado] = ordenarPedidos(
+          pedidos.filter(
+            (pedido) =>
+              (pedido.estado || "Nuevo") === estado
+          ),
+          horaActual
+        );
 
-    if (pedido.producto) {
-      return pedido.producto
-        .split(",")
-        .map((producto, indice) => (
-          <div key={`${pedido.id}-${indice}`}>
-            <strong>{producto.trim()}</strong>
-          </div>
-        ));
-    }
+        return resultado;
+      },
+      {}
+    );
+  }, [pedidos, horaActual]);
 
-    return <p>Sin productos registrados.</p>;
-  }
-
-  function formatearHora(fecha) {
-    if (!fecha) {
-      return "Sin hora";
-    }
-
-    const fechaPedido = new Date(fecha);
-
-    if (Number.isNaN(fechaPedido.getTime())) {
-      return fecha;
-    }
-
-    return fechaPedido.toLocaleTimeString("es-AR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
-
-  if (cargando) {
+  if (cargando && pedidos.length === 0) {
     return (
-      <section className="section">
-        <h2>🍕 Cocina</h2>
-        <p>Cargando pedidos...</p>
+      <section className="section cocina-pro">
+        <div className="cocina-pro-cargando">
+          <span>👨‍🍳</span>
+          <h2>Preparando Cocina PRO...</h2>
+        </div>
       </section>
     );
   }
 
   return (
-    <section className="section cocina-section">
-      <div className="cocina-encabezado">
-        <div>
-          <h2>🍕 Cocina</h2>
-          <p>Pedidos activos: {pedidos.length}</p>
+    <section className="section cocina-pro">
+      <CocinaToolbar
+        cantidadPedidos={pedidos.length}
+        cargando={cargando}
+        sonidoActivo={sonidoActivo}
+        setSonidoActivo={setSonidoActivo}
+        pantallaCompleta={pantallaCompleta}
+        actualizar={() => cargarPedidos(true)}
+        alternarPantallaCompleta={
+          alternarPantallaCompleta
+        }
+      />
+
+      {error && (
+        <div className="cocina-pro-error">
+          <strong>⚠ Error de conexión</strong>
+          <p>{error}</p>
         </div>
-
-        <button type="button" onClick={cargarPedidos}>
-          🔄 Actualizar
-        </button>
-      </div>
-
-      {error && <p className="mensaje-error">{error}</p>}
+      )}
 
       {pedidos.length === 0 ? (
-        <div className="cocina-vacia">
-          <h3>✅ No hay pedidos pendientes</h3>
-          <p>Los nuevos pedidos aparecerán automáticamente.</p>
+        <div className="cocina-pro-vacia">
+          <span>✅</span>
+          <h2>No hay pedidos pendientes</h2>
+          <p>
+            Los nuevos pedidos aparecerán
+            automáticamente.
+          </p>
         </div>
       ) : (
-        <div className="pedidos-grid">
-          {pedidos.map((pedido) => {
-            const estado = obtenerEstado(pedido);
-
-            return (
-              <article
-                key={pedido.id}
-                className={`pedido-card ${obtenerClaseEstado(
-                  estado
-                )}`}
-              >
-                <div className="pedido-cabecera">
-                  <h2>Pedido #{pedido.id}</h2>
-
-                  <span className="pedido-estado">
-                    {estado === "Nuevo" && "🟢 NUEVO"}
-                    {estado === "Preparando" &&
-                      "🟡 PREPARANDO"}
-                    {estado === "Listo" && "🔵 LISTO"}
-                  </span>
-                </div>
-
-                <div className="pedido-datos">
-                  <p>
-                    <strong>Cliente:</strong>{" "}
-                    {pedido.cliente || "Mostrador"}
-                  </p>
-
-                  {pedido.telefono && (
-                    <p>
-                      <strong>Teléfono:</strong>{" "}
-                      {pedido.telefono}
-                    </p>
-                  )}
-
-                  {pedido.direccion && (
-                    <p>
-                      <strong>Dirección:</strong>{" "}
-                      {pedido.direccion}
-                    </p>
-                  )}
-
-                  <p>
-                    <strong>Hora:</strong>{" "}
-                    {formatearHora(
-                      pedido.fechaHora ||
-                        pedido.createdAt ||
-                        pedido.fecha
-                    )}
-                  </p>
-                </div>
-
-                <div className="pedido-productos">
-                  <h3>Productos</h3>
-                  {obtenerTextoProductos(pedido)}
-                </div>
-
-                <div className="pedido-acciones">
-                  {estado === "Nuevo" && (
-                    <button
-                      type="button"
-                      className="boton-preparar"
-                      onClick={() =>
-                        cambiarEstado(pedido, "Preparando")
-                      }
-                    >
-                      👨‍🍳 Comenzar
-                    </button>
-                  )}
-
-                  {estado === "Preparando" && (
-                    <button
-                      type="button"
-                      className="boton-listo"
-                      onClick={() =>
-                        cambiarEstado(pedido, "Listo")
-                      }
-                    >
-                      ✅ Marcar listo
-                    </button>
-                  )}
-
-                  {estado === "Listo" && (
-                    <button
-                      type="button"
-                      className="boton-entregar"
-                      onClick={() =>
-                        cambiarEstado(pedido, "Entregado")
-                      }
-                    >
-                      📦 Entregar
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    className="boton-cancelar"
-                    onClick={() => {
-                      const confirmar = window.confirm(
-                        `¿Cancelar el pedido #${pedido.id}?`
-                      );
-
-                      if (confirmar) {
-                        cambiarEstado(pedido, "Cancelado");
-                      }
-                    }}
-                  >
-                    ❌ Cancelar
-                  </button>
-                </div>
-              </article>
-            );
-          })}
+        <div className="cocina-pro-tablero">
+          {ESTADOS_COCINA.map((estado) => (
+            <CocinaColumna
+              key={estado}
+              estado={estado}
+              pedidos={pedidosPorEstado[estado]}
+              horaActual={horaActual}
+              cambiandoPedidoId={
+                cambiandoPedidoId
+              }
+              cambiarEstado={cambiarEstado}
+            />
+          ))}
         </div>
       )}
     </section>
@@ -328,3 +425,5 @@ function Cocina() {
 }
 
 export default Cocina;
+
+    

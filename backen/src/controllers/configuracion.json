@@ -1,0 +1,35 @@
+{
+  "nombre": "el club de la masa g",
+  "telefono": "1140480762",
+  "whatsapp": true,
+  "instagram": "",
+  "facebook": "",
+  "tiktok": "",
+  "direccion": "Pilar, Buenos Aires",
+  "envio": "Sin cargo",
+  "costoEnvio": 0,
+  "radioEntregaKm": 0,
+  "textoPrincipal": "Las mejores pizzas de Pilar",
+  "textoSecundario": "",
+  "horarios": {
+    "mediodia": "11:00 - 16:00",
+    "noche": "19:00 - 23:00"
+  },
+  "diasAbiertos": {
+    "lunes": true,
+    "martes": true,
+    "miercoles": true,
+    "jueves": true,
+    "viernes": true,
+    "sabado": true,
+    "domingo": true
+  },
+  "mercadoPago": true,
+  "pedidosYa": true,
+  "logo": "https://res.cloudinary.com/aobqmtmm/image/upload/v1784821679/masaos/configuracion/logo-principal.jpg",
+  "banner": "",
+  "colorPrincipal": "#b71c1c",
+  "colorSecundario": "#f5f5f5",
+  "activo": true,
+  "actualizadoEn": "2026-07-23T15:49:53.752Z"
+}

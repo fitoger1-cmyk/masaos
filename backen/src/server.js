@@ -1,16 +1,24 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
+
 const crearPedidosRouter = require("./routes/pedidos");
 const productosRouter = require("./routes/productos");
 const crearVentasRouter = require("./routes/ventas");
+const configuracionRouter = require("./routes/configuracion");
+const multimediaRouter = require(
+  "./routes/multimedia"
+);
 const crearRepartidoresRouter = require("./routes/repartidores");
 const crearMasaIARouter = require("./routes/masaia");
 
 const app = express();
+
 
 const origenesPermitidos = [
   "http://localhost:5173",
@@ -49,6 +57,12 @@ io.on("connection", (socket) => {
 
 app.use(cors(configuracionCors));
 app.use(express.json());
+app.use(
+  "/uploads",
+  express.static(
+    path.join(__dirname, "uploads")
+  )
+);
 
 const productosPath = path.join(__dirname, "controllers", "productos.json");
 const ventasPath = path.join(__dirname, "controllers", "ventas.json");
@@ -155,6 +169,14 @@ app.get("/api/health", (req, res) => {
   });
 });
 app.use("/api/productos", productosRouter);
+app.use(
+  "/api/configuracion",
+  configuracionRouter
+);
+app.use(
+  "/api/multimedia",
+  multimediaRouter
+);
 
 
 app.get("/api/recetas", (req, res) => {

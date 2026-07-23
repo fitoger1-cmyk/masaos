@@ -12,8 +12,7 @@ const productosPath = path.join(
 );
 
 /**
- * Convierte categorías escritas de distintas maneras
- * a un único nombre consistente.
+ * Normaliza categorías escritas de distintas maneras.
  *
  * Ejemplos:
  * pizza, pizzas, PIZZA, Pizza Grande -> Pizza
@@ -84,7 +83,31 @@ function normalizarImagen(imagen = "") {
   return String(imagen).trim();
 }
 
-function normalizarProducto(producto) {
+function convertirBooleano(valor, valorPredeterminado = true) {
+  if (valor === undefined || valor === null) {
+    return valorPredeterminado;
+  }
+
+  if (typeof valor === "boolean") {
+    return valor;
+  }
+
+  if (typeof valor === "string") {
+    const valorLimpio = valor.trim().toLowerCase();
+
+    if (valorLimpio === "true") {
+      return true;
+    }
+
+    if (valorLimpio === "false") {
+      return false;
+    }
+  }
+
+  return Boolean(valor);
+}
+
+function normalizarProducto(producto = {}) {
   return {
     ...producto,
     id: Number(producto.id),
@@ -93,8 +116,16 @@ function normalizarProducto(producto) {
     precio: Number(producto.precio) || 0,
     descripcion: String(producto.descripcion || "").trim(),
     imagen: normalizarImagen(producto.imagen),
-    activo: producto.activo !== false,
+    activo: convertirBooleano(producto.activo, true),
   };
+}
+
+function guardarProductos(productos) {
+  fs.writeFileSync(
+    productosPath,
+    JSON.stringify(productos, null, 2),
+    "utf8"
+  );
 }
 
 function leerProductos() {
@@ -104,7 +135,9 @@ function leerProductos() {
       return [];
     }
 
-    const contenido = fs.readFileSync(productosPath, "utf8").trim();
+    const contenido = fs
+      .readFileSync(productosPath, "utf8")
+      .trim();
 
     if (!contenido) {
       return [];
@@ -118,9 +151,9 @@ function leerProductos() {
       );
     }
 
-    const productosNormalizados = datos.map(normalizarProducto);
+    const productosNormalizados =
+      datos.map(normalizarProducto);
 
-    // Corrige automáticamente las categorías antiguas del JSON.
     const huboCambios =
       JSON.stringify(datos) !==
       JSON.stringify(productosNormalizados);
@@ -131,20 +164,16 @@ function leerProductos() {
 
     return productosNormalizados;
   } catch (error) {
-    console.error("Error leyendo productos.json:", error);
+    console.error(
+      "Error leyendo productos.json:",
+      error
+    );
+
     throw error;
   }
 }
 
-function guardarProductos(productos) {
-  fs.writeFileSync(
-    productosPath,
-    JSON.stringify(productos, null, 2),
-    "utf8"
-  );
-}
-
-function validarProducto(body) {
+function validarProducto(body = {}) {
   const nombre = String(body.nombre || "").trim();
   const categoria = normalizarCategoria(body.categoria);
   const precio = Number(body.precio);
@@ -153,10 +182,7 @@ function validarProducto(body) {
     return "El nombre del producto es obligatorio.";
   }
 
-  if (
-    !Number.isFinite(precio) ||
-    precio < 0
-  ) {
+  if (!Number.isFinite(precio) || precio < 0) {
     return "El precio debe ser un número válido.";
   }
 
@@ -170,10 +196,11 @@ function validarProducto(body) {
   return null;
 }
 
-// GET - listar productos
+// GET /api/productos
 router.get("/", (req, res) => {
   try {
     const productos = leerProductos();
+
     res.json(productos);
   } catch (error) {
     res.status(500).json({
@@ -182,10 +209,47 @@ router.get("/", (req, res) => {
   }
 });
 
-// POST - crear producto
+// GET /api/productos/:id
+router.get("/:id", (req, res) => {
+  try {
+    const idProducto = Number(req.params.id);
+
+    if (!Number.isFinite(idProducto)) {
+      return res.status(400).json({
+        error: "El ID del producto no es válido.",
+      });
+    }
+
+    const productos = leerProductos();
+
+    const producto = productos.find(
+      (item) => Number(item.id) === idProducto
+    );
+
+    if (!producto) {
+      return res.status(404).json({
+        error: "Producto no encontrado.",
+      });
+    }
+
+    res.json(producto);
+  } catch (error) {
+    console.error(
+      "Error buscando producto:",
+      error
+    );
+
+    res.status(500).json({
+      error: "No se pudo buscar el producto.",
+    });
+  }
+});
+
+// POST /api/productos
 router.post("/", (req, res) => {
   try {
-    const errorValidacion = validarProducto(req.body);
+    const errorValidacion =
+      validarProducto(req.body);
 
     if (errorValidacion) {
       return res.status(400).json({
@@ -207,16 +271,18 @@ router.post("/", (req, res) => {
     const nuevoProducto = {
       id: nuevoId,
       nombre: String(req.body.nombre).trim(),
-      categoria: normalizarCategoria(req.body.categoria),
+      categoria: normalizarCategoria(
+        req.body.categoria
+      ),
       precio: Number(req.body.precio),
       descripcion: String(
         req.body.descripcion || ""
       ).trim(),
       imagen: normalizarImagen(req.body.imagen),
-      activo:
-        req.body.activo === undefined
-          ? true
-          : Boolean(req.body.activo),
+      activo: convertirBooleano(
+        req.body.activo,
+        true
+      ),
     };
 
     productos.push(nuevoProducto);
@@ -224,7 +290,10 @@ router.post("/", (req, res) => {
 
     res.status(201).json(nuevoProducto);
   } catch (error) {
-    console.error("Error creando producto:", error);
+    console.error(
+      "Error creando producto:",
+      error
+    );
 
     res.status(500).json({
       error: "No se pudo crear el producto.",
@@ -232,7 +301,7 @@ router.post("/", (req, res) => {
   }
 });
 
-// PUT - editar producto
+// PUT /api/productos/:id
 router.put("/:id", (req, res) => {
   try {
     const idProducto = Number(req.params.id);
@@ -243,7 +312,8 @@ router.put("/:id", (req, res) => {
       });
     }
 
-    const errorValidacion = validarProducto(req.body);
+    const errorValidacion =
+      validarProducto(req.body);
 
     if (errorValidacion) {
       return res.status(400).json({
@@ -269,17 +339,20 @@ router.put("/:id", (req, res) => {
 
     const productoActualizado = {
       ...productoAnterior,
+      id: idProducto,
       nombre: String(req.body.nombre).trim(),
-      categoria: normalizarCategoria(req.body.categoria),
+      categoria: normalizarCategoria(
+        req.body.categoria
+      ),
       precio: Number(req.body.precio),
       descripcion: String(
         req.body.descripcion || ""
       ).trim(),
       imagen: normalizarImagen(req.body.imagen),
-      activo:
-        req.body.activo === undefined
-          ? productoAnterior.activo !== false
-          : Boolean(req.body.activo),
+      activo: convertirBooleano(
+        req.body.activo,
+        productoAnterior.activo !== false
+      ),
     };
 
     productos[indiceProducto] =
@@ -289,7 +362,10 @@ router.put("/:id", (req, res) => {
 
     res.json(productoActualizado);
   } catch (error) {
-    console.error("Error actualizando producto:", error);
+    console.error(
+      "Error actualizando producto:",
+      error
+    );
 
     res.status(500).json({
       error: "No se pudo actualizar el producto.",
@@ -297,7 +373,53 @@ router.put("/:id", (req, res) => {
   }
 });
 
-// DELETE - eliminar producto
+// PATCH /api/productos/:id/estado
+router.patch("/:id/estado", (req, res) => {
+  try {
+    const idProducto = Number(req.params.id);
+
+    if (!Number.isFinite(idProducto)) {
+      return res.status(400).json({
+        error: "El ID del producto no es válido.",
+      });
+    }
+
+    const productos = leerProductos();
+
+    const indiceProducto = productos.findIndex(
+      (producto) =>
+        Number(producto.id) === idProducto
+    );
+
+    if (indiceProducto === -1) {
+      return res.status(404).json({
+        error: "Producto no encontrado.",
+      });
+    }
+
+    productos[indiceProducto].activo =
+      convertirBooleano(
+        req.body.activo,
+        productos[indiceProducto].activo !== false
+      );
+
+    guardarProductos(productos);
+
+    res.json(productos[indiceProducto]);
+  } catch (error) {
+    console.error(
+      "Error cambiando estado del producto:",
+      error
+    );
+
+    res.status(500).json({
+      error:
+        "No se pudo cambiar el estado del producto.",
+    });
+  }
+});
+
+// DELETE /api/productos/:id
 router.delete("/:id", (req, res) => {
   try {
     const idProducto = Number(req.params.id);
@@ -331,10 +453,14 @@ router.delete("/:id", (req, res) => {
 
     res.json({
       ok: true,
-      mensaje: "Producto eliminado correctamente.",
+      mensaje:
+        "Producto eliminado correctamente.",
     });
   } catch (error) {
-    console.error("Error eliminando producto:", error);
+    console.error(
+      "Error eliminando producto:",
+      error
+    );
 
     res.status(500).json({
       error: "No se pudo eliminar el producto.",
