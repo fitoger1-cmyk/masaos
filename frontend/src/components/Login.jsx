@@ -45,7 +45,10 @@ function Login({ onLogin }) {
         );
       }
 
-      onLogin(datos.usuario);
+      onLogin(
+  datos.usuario,
+  datos.token
+);
     } catch (errorLogin) {
       setError(errorLogin.message);
     } finally {

@@ -178,15 +178,42 @@ async function obtenerLista(endpoint) {
     ? datos
     : [];
 }
+function obtenerUsuarioGuardado() {
+  try {
+    const contenido =
+      localStorage.getItem(
+        "masaos_usuario"
+      );
+
+    return contenido
+      ? JSON.parse(contenido)
+      : null;
+  } catch {
+    localStorage.removeItem(
+      "masaos_usuario"
+    );
+
+    localStorage.removeItem(
+      "masaos_token"
+    );
+
+    return null;
+  }
+}
 
 function App() {
   const [pantalla, setPantalla] =
     useState("dashboard");
 
   const [
-    usuarioLogueado,
-    setUsuarioLogueado,
-  ] = useState(null);
+  usuarioLogueado,
+  setUsuarioLogueado,
+] = useState(obtenerUsuarioGuardado);
+
+const [
+  verificandoSesion,
+  setVerificandoSesion,
+] = useState(true);
 
   const [clientes, setClientes] =
     useState([]);
@@ -234,136 +261,160 @@ function App() {
       )
     );
 
+
   async function cargarDatosPrincipales() {
+  try {
+    const [
+      productosNuevos,
+      ventasNuevas,
+      usuariosNuevos,
+      stockNuevo,
+      clientesNuevos,
+      recetasNuevas,
+      costosNuevos,
+      produccionNueva,
+    ] = await Promise.all([
+      obtenerLista("productos"),
+      obtenerLista("ventas"),
+      obtenerLista("usuarios"),
+      obtenerLista("stock"),
+      obtenerLista("clientes"),
+      obtenerLista("recetas"),
+      obtenerLista("costos-productos"),
+      obtenerLista("produccion-maxima"),
+    ]);
+
+    setProductos(productosNuevos);
+    setVentas(ventasNuevas);
+    setUsuarios(usuariosNuevos);
+    setStock(stockNuevo);
+    setClientes(clientesNuevos);
+    setRecetas(recetasNuevas);
+    setCostos(costosNuevos);
+    setProduccion(produccionNueva);
+
+    setErrorCarga("");
+  } catch (error) {
+    console.error(
+      "Error cargando datos principales:",
+      error
+    );
+
+    setErrorCarga(
+      error.message ||
+        "No se pudieron cargar los datos."
+    );
+  }
+}
+
+useEffect(() => {
+  const token =
+    localStorage.getItem(
+      "masaos_token"
+    );
+
+  if (!token) {
+    setVerificandoSesion(false);
+    return;
+  }
+
+  async function verificarSesion() {
     try {
-      const [
-        productosNuevos,
-        ventasNuevas,
-        usuariosNuevos,
-        stockNuevo,
-        clientesNuevos,
-        recetasNuevas,
-        costosNuevos,
-        produccionNueva,
-      ] = await Promise.all([
-        obtenerLista("productos"),
-        obtenerLista("ventas"),
-        obtenerLista("usuarios"),
-        obtenerLista("stock"),
-        obtenerLista("clientes"),
-        obtenerLista("recetas"),
-        obtenerLista("costos-productos"),
-        obtenerLista("produccion-maxima"),
-      ]);
-
-      setProductos(productosNuevos);
-      setVentas(ventasNuevas);
-      setUsuarios(usuariosNuevos);
-      setStock(stockNuevo);
-      setClientes(clientesNuevos);
-      setRecetas(recetasNuevas);
-      setCostos(costosNuevos);
-      setProduccion(produccionNueva);
-
-      setErrorCarga("");
-    } catch (error) {
-      console.error(
-        "Error cargando datos principales:",
-        error
+      const respuesta = await fetch(
+        `${API_URL}/auth/me`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
       );
 
-      setErrorCarga(
-        error.message ||
-          "No se pudieron cargar los datos."
+      if (!respuesta.ok) {
+        throw new Error(
+          "Sesión no válida."
+        );
+      }
+
+      const datos =
+        await respuesta.json();
+
+      localStorage.setItem(
+        "masaos_usuario",
+        JSON.stringify(datos.usuario)
       );
+
+      setUsuarioLogueado(
+        datos.usuario
+      );
+
+      setPantalla(
+        obtenerPantallaInicial(
+          datos.usuario.rol
+        )
+      );
+    } catch {
+      localStorage.removeItem(
+        "masaos_token"
+      );
+
+      localStorage.removeItem(
+        "masaos_usuario"
+      );
+
+      setUsuarioLogueado(null);
+    } finally {
+      setVerificandoSesion(false);
     }
   }
 
-  useEffect(() => {
+  verificarSesion();
+}, []);
+
+useEffect(() => {
+  if (usuarioLogueado) {
     cargarDatosPrincipales();
-  }, []);
+  }
+}, [usuarioLogueado]);
 
-   useEffect(() => {
-    const socket = io(SOCKET_URL, {
-  transports: ["websocket", "polling"],
-});
-         socket.on("connect", () => {
-      setSocketConectado(true);
-    });
+if (verificandoSesion) {
+  return (
+    <div className="login-page">
+      <div className="login-card">
+        <div className="login-logo">
+          🍕
+        </div>
 
-    socket.on("disconnect", () => {
-      setSocketConectado(false);
-    });
-
-    socket.on("connect_error", () => {
-      setSocketConectado(false);
-    });
-
-    socket.on("venta:nueva", (nuevaVenta) => {
-      setVentas((ventasActuales) => {
-        const yaExiste = ventasActuales.some(
-          (venta) =>
-            Number(venta.id) === Number(nuevaVenta.id)
-        );
-
-        if (yaExiste) {
-          return ventasActuales;
-        }
-
-        return [...ventasActuales, nuevaVenta];
-      });
-    });
-
-    socket.on("venta:estado", (ventaActualizada) => {
-      setVentas((ventasActuales) =>
-        ventasActuales.map((venta) =>
-          Number(venta.id) ===
-          Number(ventaActualizada.id)
-            ? {
-                ...venta,
-                ...ventaActualizada,
-              }
-            : venta
-        )
-      );
-    });
-
-    socket.on("stock:actualizado", (stockNuevo) => {
-      if (Array.isArray(stockNuevo)) {
-        setStock(stockNuevo);
-      }
-    });
-
-    socket.on("dashboard:update", () => {
-      cargarDatosPrincipales();
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("connect_error");
-      socket.off("venta:nueva");
-      socket.off("venta:estado");
-      socket.off("stock:actualizado");
-      socket.off("dashboard:update");
-
-      socket.disconnect();
-    };
-  }, []);
-
+        <h1>MasaOS</h1>
+        <p>Verificando sesión...</p>
+      </div>
+    </div>
+  );
+}
   if (!usuarioLogueado) {
     return (
       <Login
-        onLogin={(usuario) => {
-          setUsuarioLogueado(usuario);
+  onLogin={(usuario, token) => {
+    localStorage.setItem(
+      "masaos_token",
+      token || ""
+    );
 
-          setPantalla(
-            obtenerPantallaInicial(
-              usuario.rol
-            )
-          );
-        }}
-      />
+    localStorage.setItem(
+      "masaos_usuario",
+      JSON.stringify(usuario)
+    );
+
+    setUsuarioLogueado(usuario);
+
+    setPantalla(
+      obtenerPantallaInicial(
+        usuario.rol
+      )
+    );
+  }}
+/>
+    
     );
   }
    
@@ -385,9 +436,17 @@ function App() {
             type="button"
             className="logout-button"
             onClick={() => {
-              setUsuarioLogueado(null);
-              setPantalla("dashboard");
-            }}
+  localStorage.removeItem(
+    "masaos_token"
+  );
+
+  localStorage.removeItem(
+    "masaos_usuario"
+  );
+
+  setUsuarioLogueado(null);
+  setPantalla("dashboard");
+}}
           >
             Cerrar sesión
           </button>
