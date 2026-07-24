@@ -14,7 +14,9 @@ const {
 } = require("./database/inicializarProductos");
 
 const crearPedidosRouter = require("./routes/pedidos");
-const productosRouter = require("./routes/productos");
+const productosRouter = require(
+  "./routes/productosPostgres"
+);
 const crearVentasRouter = require("./routes/ventas");
 const configuracionRouter = require("./routes/configuracion");
 const multimediaRouter = require(
