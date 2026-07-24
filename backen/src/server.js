@@ -12,6 +12,13 @@ const {
 const {
   inicializarProductos,
 } = require("./database/inicializarProductos");
+const {
+  inicializarUsuarios,
+} = require("./database/inicializarUsuarios");
+
+const usuariosPostgresRouter = require(
+  "./routes/usuariosPostgres"
+);
 
 const crearPedidosRouter = require("./routes/pedidos");
 const productosRouter = require(
@@ -71,6 +78,10 @@ app.use(
   express.static(
     path.join(__dirname, "uploads")
   )
+);
+app.use(
+  "/api",
+  usuariosPostgresRouter
 );
 
 const productosPath = path.join(__dirname, "controllers", "productos.json");
@@ -636,6 +647,7 @@ const PORT = process.env.PORT || 3000;
 async function iniciarServidor() {
   try {
     await inicializarProductos();
+    await inicializarUsuarios();
 
     servidorHttp.listen(
       PORT,
