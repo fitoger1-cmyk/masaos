@@ -6,6 +6,9 @@ const fs = require("fs");
 const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
+const {
+  verificarConexionBD,
+} = require("./config/database");
 
 const crearPedidosRouter = require("./routes/pedidos");
 const productosRouter = require("./routes/productos");
@@ -177,6 +180,33 @@ app.get("/api/health", (req, res) => {
     tiempoReal: true,
     fechaHora: new Date().toISOString(),
   });
+});
+app.get("/api/db-health", async (req, res) => {
+  try {
+    const estadoBD =
+      await verificarConexionBD();
+
+    res.status(200).json({
+      ok: true,
+      servicio: "PostgreSQL",
+      estado: "online",
+      baseDatos: estadoBD.baseDatos,
+      fechaHora: estadoBD.fechaHora,
+    });
+  } catch (error) {
+    console.error(
+      "Error comprobando PostgreSQL:",
+      error
+    );
+
+    res.status(500).json({
+      ok: false,
+      servicio: "PostgreSQL",
+      estado: "error",
+      mensaje:
+        "No se pudo conectar con la base de datos.",
+    });
+  }
 });
 app.use("/api/productos", productosRouter);
 app.use(
