@@ -4,6 +4,10 @@ const bcrypt = require("bcryptjs");
 const {
   pool,
 } = require("../config/database");
+const {
+  generarToken,
+  autenticar,
+} = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -351,7 +355,57 @@ if (pool) {
       }
     }
   );
+// GET /api/auth/me
+router.get(
+  "/auth/me",
+  autenticar,
+  async (req, res) => {
+    try {
+      const resultado = await pool.query(
+        `
+          SELECT
+            id,
+            nombre,
+            usuario,
+            rol,
+            activo,
+            ultimo_login
+          FROM usuarios
+          WHERE id = $1
+          LIMIT 1
+        `,
+        [req.usuario.id]
+      );
 
+      if (
+        resultado.rowCount === 0 ||
+        !resultado.rows[0].activo
+      ) {
+        return res.status(401).json({
+          error:
+            "La sesión ya no es válida.",
+        });
+      }
+
+      res.json({
+        ok: true,
+        usuario: normalizarUsuarioFila(
+          resultado.rows[0]
+        ),
+      });
+    } catch (error) {
+      console.error(
+        "Error verificando sesión:",
+        error
+      );
+
+      res.status(500).json({
+        error:
+          "No se pudo verificar la sesión.",
+      });
+    }
+  }
+);
   // POST /api/login
   router.post("/login", async (req, res) => {
     try {
@@ -438,13 +492,20 @@ if (pool) {
           [usuarioEncontrado.id]
         );
 
-      res.json({
-        mensaje:
-          "Inicio de sesión correcto.",
-        usuario: normalizarUsuarioFila(
-          loginActualizado.rows[0]
-        ),
-      });
+     const usuarioRespuesta =
+  normalizarUsuarioFila(
+    loginActualizado.rows[0]
+  );
+
+const token =
+  generarToken(usuarioRespuesta);
+
+res.json({
+  mensaje:
+    "Inicio de sesión correcto.",
+  token,
+  usuario: usuarioRespuesta,
+});
     } catch (error) {
       console.error(
         "Error iniciando sesión PostgreSQL:",
