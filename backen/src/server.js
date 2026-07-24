@@ -9,6 +9,9 @@ const { Server } = require("socket.io");
 const {
   verificarConexionBD,
 } = require("./config/database");
+const {
+  inicializarProductos,
+} = require("./database/inicializarProductos");
 
 const crearPedidosRouter = require("./routes/pedidos");
 const productosRouter = require("./routes/productos");
@@ -628,6 +631,27 @@ console.log("===== MASAOS ENTERPRISE API =====");
 
 const PORT = process.env.PORT || 3000;
 
-servidorHttp.listen(PORT, "0.0.0.0", () => {
-  console.log(`MasaOS Enterprise API corriendo en puerto ${PORT}`);
-});
+async function iniciarServidor() {
+  try {
+    await inicializarProductos();
+
+    servidorHttp.listen(
+      PORT,
+      "0.0.0.0",
+      () => {
+        console.log(
+          `MasaOS Enterprise API corriendo en puerto ${PORT}`
+        );
+      }
+    );
+  } catch (error) {
+    console.error(
+      "No se pudo iniciar MasaOS Enterprise:",
+      error
+    );
+
+    process.exit(1);
+  }
+}
+
+iniciarServidor();
