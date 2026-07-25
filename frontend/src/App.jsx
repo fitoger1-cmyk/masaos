@@ -162,10 +162,20 @@ function obtenerPantallaInicial(rol) {
 }
 
 async function obtenerLista(endpoint) {
+  const token = localStorage.getItem("masaos_token")
+  
+console.log(
+  "TOKEN OBTENER LISTA:",
+  localStorage.getItem("masaos_token")
+);
   const respuesta = await fetch(
-    `${API_URL}/${endpoint}`
+    `${API_URL}/${endpoint}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
-
   if (!respuesta.ok) {
     throw new Error(
       `No se pudo cargar ${endpoint}.`
@@ -399,6 +409,7 @@ if (verificandoSesion) {
       "masaos_token",
       token || ""
     );
+    console.log("TOKEN LOGIN:", token);
 
     localStorage.setItem(
       "masaos_usuario",

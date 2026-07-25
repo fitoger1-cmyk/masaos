@@ -41,16 +41,16 @@ function Usuarios({ usuarios, setUsuarios }) {
     setError("");
 
     try {
-      const respuesta = await fetch(
-        `${API_URL}/usuarios`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formulario),
-        }
-      );
+      const token = localStorage.getItem("masaos_token");
+
+const respuesta = await fetch(`${API_URL}/usuarios`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify(formulario),
+});
 
       const datos = await respuesta.json();
 

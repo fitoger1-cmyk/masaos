@@ -19,6 +19,10 @@ const {
 const usuariosPostgresRouter = require(
   "./routes/usuariosPostgres"
 );
+const {
+  generarToken,
+  autenticar,
+} = require("./middleware/auth");
 
 const crearPedidosRouter = require("./routes/pedidos");
 const productosRouter = require(
@@ -73,6 +77,11 @@ io.on("connection", (socket) => {
 
 app.use(cors(configuracionCors));
 app.use(express.json());
+app.get("/api/auth/me", autenticar, (req, res) => {
+  res.json({
+    usuario: req.usuario,
+  });
+});
 app.use(
   "/uploads",
   express.static(
@@ -80,7 +89,8 @@ app.use(
   )
 );
 app.use(
-  "/api",
+  "/api/usuarios",
+  autenticar,
   usuariosPostgresRouter
 );
 
@@ -628,17 +638,22 @@ app.post("/api/login", (req, res) => {
     JSON.stringify(usuarios, null, 2)
   );
 
-  res.json({
-    mensaje: "Inicio de sesión correcto.",
-    usuario: {
-      id: usuarioEncontrado.id,
-      nombre: usuarioEncontrado.nombre,
-      usuario: usuarioEncontrado.usuario,
-      rol: usuarioEncontrado.rol,
-      activo: usuarioEncontrado.activo,
-      ultimoLogin: usuarioEncontrado.ultimoLogin,
-    },
-  });
+  const usuarioRespuesta = {
+  id: usuarioEncontrado.id,
+  nombre: usuarioEncontrado.nombre,
+  usuario: usuarioEncontrado.usuario,
+  rol: usuarioEncontrado.rol,
+  activo: usuarioEncontrado.activo,
+  ultimoLogin: usuarioEncontrado.ultimoLogin,
+};
+
+const token = generarToken(usuarioRespuesta);
+
+res.json({
+  mensaje: "Inicio de sesión correcto.",
+  token,
+  usuario: usuarioRespuesta,
+});
 });
 console.log("===== MASAOS ENTERPRISE API =====");
 

@@ -5,7 +5,7 @@ function obtenerSecretoJWT() {
 
   if (!secreto) {
     throw new Error(
-      "JWT_SECRET no está configurado."
+      "Falta configurar la variable de entorno JWT_SECRET."
     );
   }
 
@@ -22,9 +22,9 @@ function generarToken(usuario) {
     obtenerSecretoJWT(),
     {
       subject: String(usuario.id),
-      expiresIn: "8h",
       issuer: "masaos-enterprise-api",
       audience: "masaos-enterprise-panel",
+      expiresIn: "8h",
     }
   );
 }

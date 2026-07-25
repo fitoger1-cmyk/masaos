@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const crearPedidosRouter = require("./routes/pedidos");
+const productosRouter = require("./routes/productos");
+const crearVentasRouter = require("./routes/ventas");
 
 const app = express();
 
@@ -19,6 +22,16 @@ const clientesPath = path.join(
   "clientes.json"
 );
 const insumosPath = path.join(__dirname, "controllers", "insumos.json");
+const usuariosPath = path.join(
+  __dirname,
+  "controllers",
+  "usuarios.json"
+);
+const pedidosPath = path.join(
+  __dirname,
+  "controllers",
+  "pedidos.json"
+);
 
 let clientes = JSON.parse(
   fs.readFileSync(clientesPath, "utf8")
@@ -29,13 +42,39 @@ let proveedores = JSON.parse(fs.readFileSync(proveedoresPath, "utf8"));
 let compras = JSON.parse(fs.readFileSync(comprasPath, "utf8"));
 let recetas = JSON.parse(fs.readFileSync(recetasPath, "utf8"));
 let stock = JSON.parse(fs.readFileSync(insumosPath, "utf8"));
-app.put("/api/test/:id", (req, res) => {
-  res.json({ ok: true, id: req.params.id, body: req.body });
-});
+let usuarios = JSON.parse(
+  fs.readFileSync(usuariosPath, "utf8")
+);
+let pedidos = JSON.parse(
+  fs.readFileSync(pedidosPath, "utf8")
+);
+app.use(
+  "/api/pedidos",
+  crearPedidosRouter({
+    pedidos,
+    setPedidos: (nuevosPedidos) => {
+      pedidos = nuevosPedidos;
+    },
+    pedidosPath,
+  })
+);
+app.use(
+  "/api/ventas",
+  crearVentasRouter({
+    ventas,
+    recetas,
+    stock,
+    clientes,
+    ventasPath,
+    insumosPath,
+    clientesPath,
+  })
+);
 app.get("/", (req, res) => {
-  res.json({ sistema: "MasaOS", version: "1.0", estado: "Activo" });
+  res.json({ sistema: "MasaOS", version: "2.0", estado: "Activo" });
 });
-
+app.use("/api/productos", productosRouter);
+/*
 app.get("/api/productos", (req, res) => {
   res.json(productos);
 });
@@ -46,7 +85,8 @@ app.post("/api/productos", (req, res) => {
     nombre: req.body.nombre,
     categoria: req.body.categoria,
     precio: Number(req.body.precio),
-    descripcion: req.body.descripcion || "",activo: true,
+    descripcion: req.body.descripcion || "",
+    activo: true,
     imagen: req.body.imagen || "",
   };
 
@@ -57,7 +97,6 @@ app.post("/api/productos", (req, res) => {
 });
 
 app.put("/api/productos/:id", (req, res) => {
-    console.log("ENTRÓ AL PUT", req.params.id, req.body);
   const id = Number(req.params.id);
   const producto = productos.find((p) => Number(p.id) === id);
   if (!producto) {
@@ -84,7 +123,7 @@ app.delete("/api/productos/:id", (req, res) => {
 
   res.json({ ok: true });
 });
-
+*/
 app.get("/api/ventas", (req, res) => {
   res.json(ventas);
 });
@@ -202,172 +241,17 @@ app.put("/api/recetas/:id", (req, res) => {
 
   res.json(receta);
 });
-
+/*
 app.post("/api/ventas", (req, res) => {
-    const productosVendidos = req.body.producto.split(",");
+  const textoProductos = String(req.body.producto || "").trim();
 
-  for (const item of productosVendidos) {
-    const partes = item.trim().split(" x");
-    const nombreProducto = partes[0];
-    const cantidadVendida = Number(partes[1] || 1);
-    const receta = recetas.find(
-  (item) =>
-    item.producto.trim().toLowerCase() ===
-    nombreProducto.trim().toLowerCase()
-);
-app.put("/api/ventas/:id/estado", (req, res) => {
-  const id = Number(req.params.id);
-  const estadosPermitidos = [
-    "Nuevo",
-    "Preparando",
-    "Listo",
-    "Entregado",
-    "Cancelado",
-  ];
-
-  const nuevoEstado = String(req.body.estado || "").trim();
-
-  if (!estadosPermitidos.includes(nuevoEstado)) {
+  if (!textoProductos) {
     return res.status(400).json({
-      error: "Estado de pedido no válido.",
+      error: "La venta debe contener al menos un producto.",
     });
   }
-
-  const venta = ventas.find(
-    (item) => Number(item.id) === id
-  );
-
-  if (!venta) {
-    return res.status(404).json({
-      error: "Pedido no encontrado.",
-    });
-  }
-
-  venta.estado = nuevoEstado;
-  venta.fechaActualizacion = new Date().toISOString();
-
-  fs.writeFileSync(
-    ventasPath,
-    JSON.stringify(ventas, null, 2)
-  );
-
-  res.json(venta);
-});
-
-const siguienteId = ventas.length
-  ? Math.max(...ventas.map((venta) => Number(venta.id))) + 1
-  : 1;
-
-const ahora = new Date();
-
-const nuevaVenta = {
-  id: siguienteId,
-  cliente: req.body.cliente || "Mostrador",
-  telefono: req.body.telefono || "",
-  direccion: req.body.direccion || "",
-  producto: req.body.producto,
-  cantidad: Number(req.body.cantidad),
-  total: Number(req.body.total),
-  formaPago: req.body.formaPago || "",
-  montoRecibido: Number(req.body.montoRecibido || 0),
-  vuelto: Number(req.body.vuelto || 0),
-
-  fecha: ahora.toISOString().split("T")[0],
-  fechaHora: ahora.toISOString(),
-
-  estado: "Nuevo",
-  observaciones: req.body.observaciones || "",
-};
-
-  ventas.push(nuevaVenta);
-  const nombreCliente = String(req.body.cliente || "").trim();
-const telefonoCliente = String(req.body.telefono || "").trim();
-const direccionCliente = String(req.body.direccion || "").trim();
-
-if (nombreCliente && nombreCliente.toLowerCase() !== "mostrador") {
-  let clienteExistente = clientes.find((cliente) => {
-    if (telefonoCliente && cliente.telefono) {
-      return cliente.telefono === telefonoCliente;
-    }
-
-    return cliente.nombre.toLowerCase() === nombreCliente.toLowerCase();
-  });
-
-  if (clienteExistente) {
-    clienteExistente.nombre = nombreCliente;
-    clienteExistente.telefono = telefonoCliente || clienteExistente.telefono;
-    clienteExistente.direccion =
-      direccionCliente || clienteExistente.direccion;
-    clienteExistente.cantidadPedidos =
-      Number(clienteExistente.cantidadPedidos || 0) + 1;
-    clienteExistente.totalGastado =
-      Number(clienteExistente.totalGastado || 0) + Number(req.body.total);
-    clienteExistente.ultimaCompra = nuevaVenta.fecha;
-  } else {
-    clientes.push({
-      id: clientes.length
-        ? Math.max(...clientes.map((cliente) => Number(cliente.id))) + 1
-        : 1,
-      nombre: nombreCliente,
-      telefono: telefonoCliente,
-      direccion: direccionCliente,
-      cantidadPedidos: 1,
-      totalGastado: Number(req.body.total),
-      ultimaCompra: nuevaVenta.fecha,
-    });
-  }
-
-  fs.writeFileSync(clientesPath, JSON.stringify(clientes, null, 2));
-}
-
-  productosVendidos.forEach((item) => {
-  const partes = item.trim().split(" x");
-  const nombreProducto = partes[0].trim();
-  const cantidadVendida = Number(partes[1] || 1);
-
-  const receta = recetas.find(
-    (itemReceta) =>
-      String(itemReceta.producto).trim().toLowerCase() ===
-      nombreProducto.toLowerCase()
-  );
-
-  if (!receta) {
-    console.warn(
-      `No se encontró una receta para el producto: ${nombreProducto}`
-    );
-    return;
-  }
-
-  receta.ingredientes.forEach((ingredienteReceta) => {
-    const itemStock = stock.find(
-      (itemStockActual) =>
-        String(itemStockActual.ingrediente).trim().toLowerCase() ===
-        String(ingredienteReceta.ingrediente).trim().toLowerCase()
-    );
-
-    if (!itemStock) {
-      console.warn(
-        `No se encontró el insumo: ${ingredienteReceta.ingrediente}`
-      );
-      return;
-    }
-
-    const cantidadADescontar =
-      Number(ingredienteReceta.cantidad) * cantidadVendida;
-
-    itemStock.cantidad = Number(
-      (
-        Number(itemStock.cantidad) - cantidadADescontar
-      ).toFixed(2)
-    );
-  });
-});
-
-  fs.writeFileSync(ventasPath, JSON.stringify(ventas, null, 2));
-  fs.writeFileSync(insumosPath, JSON.stringify(stock, null, 2));
-  res.json(nuevaVenta);
-});
-
+*/
+  
 app.get("/api/stock", (req, res) => {
   res.json(stock);
 });
@@ -421,11 +305,170 @@ app.get("/api/clientes", (req, res) => {
   res.json(clientes);
 });
 
+// Obtener todos los usuarios
 app.get("/api/usuarios", (req, res) => {
-  res.json([
-    { id: 1, nombre: "Germán", rol: "administrador", activo: true },
-    { id: 2, nombre: "Caja", rol: "caja", activo: true },
-  ]);
+  const usuariosSinPassword = usuarios.map((usuario) => ({
+    id: usuario.id,
+    nombre: usuario.nombre,
+    usuario: usuario.usuario,
+    rol: usuario.rol,
+    activo: usuario.activo,
+    ultimoLogin: usuario.ultimoLogin || "",
+  }));
+
+  res.json(usuariosSinPassword);
+});
+
+// Crear un usuario
+app.post("/api/usuarios", (req, res) => {
+  const nombre = String(req.body.nombre || "").trim();
+  const nombreUsuario = String(req.body.usuario || "")
+    .trim()
+    .toLowerCase();
+  const password = String(req.body.password || "").trim();
+  const rol = String(req.body.rol || "").trim().toLowerCase();
+
+  if (!nombre || !nombreUsuario || !password || !rol) {
+    return res.status(400).json({
+      error:
+        "Nombre, usuario, contraseña y rol son obligatorios.",
+    });
+  }
+
+  const usuarioExistente = usuarios.find(
+    (item) =>
+      String(item.usuario).trim().toLowerCase() === nombreUsuario
+  );
+
+  if (usuarioExistente) {
+    return res.status(400).json({
+      error: "Ese nombre de usuario ya está registrado.",
+    });
+  }
+
+  const siguienteId = usuarios.length
+    ? Math.max(...usuarios.map((item) => Number(item.id))) + 1
+    : 1;
+
+  const nuevoUsuario = {
+    id: siguienteId,
+    nombre,
+    usuario: nombreUsuario,
+    password,
+    rol,
+    activo: true,
+    ultimoLogin: "",
+  };
+
+  usuarios.push(nuevoUsuario);
+
+  fs.writeFileSync(
+    usuariosPath,
+    JSON.stringify(usuarios, null, 2)
+  );
+
+  res.status(201).json({
+    id: nuevoUsuario.id,
+    nombre: nuevoUsuario.nombre,
+    usuario: nuevoUsuario.usuario,
+    rol: nuevoUsuario.rol,
+    activo: nuevoUsuario.activo,
+    ultimoLogin: nuevoUsuario.ultimoLogin,
+  });
+});
+
+// Editar un usuario
+app.put("/api/usuarios/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const usuarioEncontrado = usuarios.find(
+    (item) => Number(item.id) === id
+  );
+
+  if (!usuarioEncontrado) {
+    return res.status(404).json({
+      error: "Usuario no encontrado.",
+    });
+  }
+
+  const nombre = String(req.body.nombre || "").trim();
+  const nombreUsuario = String(req.body.usuario || "")
+    .trim()
+    .toLowerCase();
+  const rol = String(req.body.rol || "").trim().toLowerCase();
+
+  if (!nombre || !nombreUsuario || !rol) {
+    return res.status(400).json({
+      error: "Nombre, usuario y rol son obligatorios.",
+    });
+  }
+
+  const usuarioDuplicado = usuarios.find(
+    (item) =>
+      Number(item.id) !== id &&
+      String(item.usuario).trim().toLowerCase() === nombreUsuario
+  );
+
+  if (usuarioDuplicado) {
+    return res.status(400).json({
+      error: "Ese nombre de usuario ya está registrado.",
+    });
+  }
+
+  usuarioEncontrado.nombre = nombre;
+  usuarioEncontrado.usuario = nombreUsuario;
+  usuarioEncontrado.rol = rol;
+
+  if (req.body.password) {
+    usuarioEncontrado.password = String(
+      req.body.password
+    ).trim();
+  }
+
+  fs.writeFileSync(
+    usuariosPath,
+    JSON.stringify(usuarios, null, 2)
+  );
+
+  res.json({
+    id: usuarioEncontrado.id,
+    nombre: usuarioEncontrado.nombre,
+    usuario: usuarioEncontrado.usuario,
+    rol: usuarioEncontrado.rol,
+    activo: usuarioEncontrado.activo,
+    ultimoLogin: usuarioEncontrado.ultimoLogin || "",
+  });
+});
+
+// Activar o desactivar un usuario
+app.patch("/api/usuarios/:id/estado", (req, res) => {
+  const id = Number(req.params.id);
+
+  const usuarioEncontrado = usuarios.find(
+    (item) => Number(item.id) === id
+  );
+
+  if (!usuarioEncontrado) {
+    return res.status(404).json({
+      error: "Usuario no encontrado.",
+    });
+  }
+
+  usuarioEncontrado.activo = !usuarioEncontrado.activo;
+
+  fs.writeFileSync(
+    usuariosPath,
+    JSON.stringify(usuarios, null, 2)
+  );
+
+  res.json({
+    id: usuarioEncontrado.id,
+    nombre: usuarioEncontrado.nombre,
+    usuario: usuarioEncontrado.usuario,
+    rol: usuarioEncontrado.rol,
+    activo: usuarioEncontrado.activo,
+    ultimoLogin: usuarioEncontrado.ultimoLogin || "",
+  });
 });
 
 app.get("/api/compras/reset", (req, res) => {
@@ -434,7 +477,7 @@ app.get("/api/compras/reset", (req, res) => {
   res.json({ ok: true, mensaje: "Compras limpiadas", compras });
 });
 
-console.log("===== SERVER NUEVO =====");
+console.log("===== MasaOS v2 =====");
 
 const PORT = 3000;
 
