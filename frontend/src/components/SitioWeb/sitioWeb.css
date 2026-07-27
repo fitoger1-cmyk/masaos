@@ -1,0 +1,301 @@
+.sitio-web {
+  width: 100%;
+}
+
+.sitio-web__encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.sitio-web__encabezado h1 {
+  margin: 4px 0 8px;
+}
+
+.sitio-web__etiqueta {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sitio-web__contenido {
+  display: grid;
+  gap: 24px;
+}
+
+.sitio-web__tarjeta {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--card-bg, #ffffff);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.sitio-web__tarjeta h2 {
+  margin-top: 0;
+}
+
+.sitio-web__grilla {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.sitio-web__grilla label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.sitio-web__grilla input,
+.sitio-web__grilla textarea,
+.sitio-web__grilla select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sitio-web__checkbox {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.sitio-web__checkbox input {
+  width: auto;
+}
+
+.sitio-web__logo {
+  display: block;
+  max-width: 180px;
+  max-height: 180px;
+  object-fit: contain;
+  margin: 16px 0;
+}
+
+.sitio-web__banner {
+  min-height: 280px;
+  padding: 32px;
+  border-radius: 16px;
+  background-position: center;
+  background-size: cover;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sitio-web__banner h3 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+.sitio-web__banner p {
+  margin: 0 0 18px;
+}
+
+.sitio-web__banner span {
+  width: fit-content;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: white;
+  color: #222;
+  font-weight: 700;
+}
+
+.sitio-web__mensaje {
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  border-radius: 10px;
+}
+
+.sitio-web__mensaje--exito {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.sitio-web__mensaje--error {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+@media (max-width: 700px) {
+  .sitio-web__encabezado {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+.sitio-web__grilla label {
+  min-width: 0;
+}
+
+.sitio-web__grilla input[type="range"] {
+  width: 100%;
+}
+
+.sitio-web__opacidad {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  white-space: nowrap;
+}
+
+.sitio-web__opacidad strong {
+  display: inline;
+}
+.promociones-manager__imagen{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    margin-top:20px;
+}
+
+.promociones-manager__imagen button{
+    width:220px;
+}
+
+.promociones-manager__preview img{
+    width:100%;
+    max-height:320px;
+    object-fit:cover;
+    border-radius:14px;
+}
+
+.promociones-manager__imagen label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.promociones-manager__imagen input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.promociones-manager__preview {
+  margin-top: 20px;
+}
+
+.promociones-manager__preview img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+@media (max-width: 800px) {
+  .promociones-manager__imagen {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+}
+.promociones-manager__tarjetas {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.promociones-manager__promocion {
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+.promociones-manager__promocion img {
+  display: block;
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+
+.promociones-manager__promocion > div {
+  padding: 20px;
+}
+
+.promociones-manager__promocion h4 {
+  margin: 12px 0 8px;
+  font-size: 1.25rem;
+}
+
+.promociones-manager__promocion p {
+  margin: 0 0 16px;
+  line-height: 1.45;
+}
+
+.promociones-manager__estado {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.promociones-manager__estado--activo {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.promociones-manager__estado--inactivo {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+.promociones-manager__precios {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.promociones-manager__precios span {
+  color: #777;
+  text-decoration: line-through;
+}
+
+.promociones-manager__precios strong {
+  font-size: 1.3rem;
+}
+
+.promociones-manager__ahorro {
+  margin: 0 0 16px;
+  font-weight: 700;
+  color: #b71c1c;
+}
+
+.promociones-manager__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.promociones-manager__badge {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f3f3f3;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.promociones-manager__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.promociones-manager__acciones button {
+  flex: 1;
+  min-width: 90px;
+}

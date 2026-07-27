@@ -59,7 +59,7 @@
     "categoria": "Pizza",
     "precio": 16000,
     "descripcion": "Pizza doble muzzarella",
-    "imagen": "",
+    "imagen": "https://res.cloudinary.com/aobqmtmm/image/upload/v1784943962/masaos/productos/zisocqt7vmsfh8sauj8c.jpg",
     "activo": true
   },
   {

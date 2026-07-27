@@ -25,6 +25,10 @@ const configuracionInicial = {
   textoPrincipal: "Las mejores pizzas de Pilar",
   textoSecundario:
     "Pizzas artesanales, focaccias y postres elaborados con ingredientes de calidad.",
+    mensajeWhatsApp:
+  "Hola, quiero hacer un pedido.",
+mostrarPromociones: true,
+mostrarDestacados: true,
   horarios: {
     mediodia: "11:00 - 16:00",
     noche: "19:00 - 23:00",
@@ -45,6 +49,31 @@ const configuracionInicial = {
   colorPrincipal: "#b71c1c",
   colorSecundario: "#f5f5f5",
   activo: true,
+  negocio: {
+  nombre: "El Club de la Masa G",
+  telefono: "541140480762",
+  direccion: "Pilar, Buenos Aires",
+  envio: "Sin cargo",
+},
+
+web: {
+  logo: "",
+  colorPrincipal: "#b71c1c",
+  colorSecundario: "#f5f5f5",
+  activo: true,
+},
+
+bannerConfig: {
+  imagen: "",
+  titulo: "Las mejores pizzas de Pilar",
+  subtitulo:
+    "Pizzas artesanales, focaccias y pastelería",
+  textoBoton: "Ver menú",
+  destino: "menu",
+  urlPersonalizada: "",
+  opacidad: 0.55,
+  activo: true,
+},
 };
 
 function crearArchivoConfiguracion() {
@@ -93,17 +122,89 @@ function leerConfiguracion() {
     }
 
     return {
-      ...configuracionInicial,
-      ...configuracion,
-      horarios: {
-        ...configuracionInicial.horarios,
-        ...(configuracion.horarios || {}),
-      },
-      diasAbiertos: {
-        ...configuracionInicial.diasAbiertos,
-        ...(configuracion.diasAbiertos || {}),
-      },
-    };
+  ...configuracionInicial,
+  ...configuracion,
+
+  horarios: {
+    ...configuracionInicial.horarios,
+    ...(configuracion.horarios || {}),
+  },
+
+  diasAbiertos: {
+    ...configuracionInicial.diasAbiertos,
+    ...(configuracion.diasAbiertos || {}),
+  },
+
+  negocio: {
+    ...configuracionInicial.negocio,
+    ...(configuracion.negocio || {}),
+
+    nombre:
+      configuracion.negocio?.nombre ||
+      configuracion.nombre ||
+      configuracionInicial.negocio.nombre,
+
+    telefono:
+      configuracion.negocio?.telefono ||
+      configuracion.telefono ||
+      configuracionInicial.negocio.telefono,
+
+    direccion:
+      configuracion.negocio?.direccion ||
+      configuracion.direccion ||
+      configuracionInicial.negocio.direccion,
+
+    envio:
+      configuracion.negocio?.envio ||
+      configuracion.envio ||
+      configuracionInicial.negocio.envio,
+  },
+
+  web: {
+    ...configuracionInicial.web,
+    ...(configuracion.web || {}),
+
+    logo:
+      configuracion.web?.logo ||
+      configuracion.logo ||
+      "",
+
+    colorPrincipal:
+      configuracion.web?.colorPrincipal ||
+      configuracion.colorPrincipal ||
+      configuracionInicial.web.colorPrincipal,
+
+    colorSecundario:
+      configuracion.web?.colorSecundario ||
+      configuracion.colorSecundario ||
+      configuracionInicial.web.colorSecundario,
+
+    activo:
+      configuracion.web?.activo ??
+      configuracion.activo ??
+      true,
+  },
+
+  bannerConfig: {
+    ...configuracionInicial.bannerConfig,
+    ...(configuracion.bannerConfig || {}),
+
+    imagen:
+      configuracion.bannerConfig?.imagen ||
+      configuracion.banner ||
+      "",
+
+    titulo:
+      configuracion.bannerConfig?.titulo ||
+      configuracion.textoPrincipal ||
+      configuracionInicial.bannerConfig.titulo,
+
+    subtitulo:
+      configuracion.bannerConfig?.subtitulo ||
+      configuracion.textoSecundario ||
+      configuracionInicial.bannerConfig.subtitulo,
+  },
+};
   } catch (error) {
     console.error(
       "Error leyendo configuracion.json:",
@@ -227,6 +328,19 @@ function normalizarConfiguracion(
     textoSecundario: limpiarTexto(
       body.textoSecundario
     ),
+    mensajeWhatsApp: limpiarTexto(
+  body.mensajeWhatsApp
+),
+
+mostrarPromociones: convertirBooleano(
+  body.mostrarPromociones,
+  configuracionAnterior.mostrarPromociones
+),
+
+mostrarDestacados: convertirBooleano(
+  body.mostrarDestacados,
+  configuracionAnterior.mostrarDestacados
+),
 
     horarios: {
       mediodia: limpiarTexto(
@@ -303,7 +417,114 @@ function normalizarConfiguracion(
       body.activo,
       configuracionAnterior.activo
     ),
+negocio: {
+  nombre: limpiarTexto(
+    body.negocio?.nombre ??
+      body.nombre
+  ),
 
+  telefono: limpiarTexto(
+    body.negocio?.telefono ??
+      body.telefono
+  ),
+
+  direccion: limpiarTexto(
+    body.negocio?.direccion ??
+      body.direccion
+  ),
+
+  envio: limpiarTexto(
+    body.negocio?.envio ??
+      body.envio
+  ),
+},
+
+web: {
+  logo: limpiarTexto(
+    body.web?.logo ??
+      body.logo ??
+      configuracionAnterior.web?.logo
+  ),
+
+  colorPrincipal: limpiarTexto(
+    body.web?.colorPrincipal ??
+      body.colorPrincipal ??
+      configuracionAnterior.web
+        ?.colorPrincipal
+  ),
+
+  colorSecundario: limpiarTexto(
+    body.web?.colorSecundario ??
+      body.colorSecundario ??
+      configuracionAnterior.web
+        ?.colorSecundario
+  ),
+
+  activo: convertirBooleano(
+    body.web?.activo ??
+      body.activo,
+    configuracionAnterior.web?.activo ??
+      true
+  ),
+},
+
+bannerConfig: {
+  imagen: limpiarTexto(
+    body.bannerConfig?.imagen ??
+      body.banner ??
+      configuracionAnterior
+        .bannerConfig?.imagen
+  ),
+
+  titulo: limpiarTexto(
+    body.bannerConfig?.titulo ??
+      body.textoPrincipal ??
+      configuracionAnterior
+        .bannerConfig?.titulo
+  ),
+
+  subtitulo: limpiarTexto(
+    body.bannerConfig?.subtitulo ??
+      body.textoSecundario ??
+      configuracionAnterior
+        .bannerConfig?.subtitulo
+  ),
+
+  textoBoton: limpiarTexto(
+    body.bannerConfig?.textoBoton ??
+      configuracionAnterior
+        .bannerConfig?.textoBoton ??
+      "Ver menú"
+  ),
+
+  destino: limpiarTexto(
+    body.bannerConfig?.destino ??
+      configuracionAnterior
+        .bannerConfig?.destino ??
+      "menu"
+  ),
+
+  urlPersonalizada: limpiarTexto(
+    body.bannerConfig?.urlPersonalizada ??
+      configuracionAnterior
+        .bannerConfig
+        ?.urlPersonalizada
+  ),
+
+  opacidad: Number(
+    body.bannerConfig?.opacidad ??
+      configuracionAnterior
+        .bannerConfig?.opacidad ??
+      0.55
+  ),
+
+  activo: convertirBooleano(
+    body.bannerConfig?.activo,
+    configuracionAnterior
+      .bannerConfig?.activo ??
+      true
+  ),
+},
     actualizadoEn: new Date().toISOString(),
   };
 }

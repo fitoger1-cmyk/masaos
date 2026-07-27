@@ -6,7 +6,7 @@
     "password": "1234",
     "rol": "administrador",
     "activo": true,
-    "ultimoLogin": "2026-07-25T01:11:36.086Z"
+    "ultimoLogin": "2026-07-26T22:51:46.335Z"
   },
   {
     "id": 2,
@@ -34,5 +34,14 @@
     "rol": "delivery",
     "activo": true,
     "ultimoLogin": "2026-07-15T21:30:18.377Z"
+  },
+  {
+    "id": 5,
+    "nombre": "nancy",
+    "usuario": "nancy",
+    "password": "1111",
+    "rol": "cajero",
+    "activo": true,
+    "ultimoLogin": "2026-07-25T04:08:53.843Z"
   }
 ]

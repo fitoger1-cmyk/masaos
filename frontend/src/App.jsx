@@ -16,12 +16,14 @@ import Produccion from "./components/Produccion";
 import Cocina from "./components/Cocina";
 import Usuarios from "./components/Usuarios";
 import Login from "./components/Login";
+import SitioWeb from "./components/SitioWeb/SitioWeb";
 import DashboardEnterpriseV2 from "./components/DashboardEnterpriseV2";
 import Delivery from "./components/Delivery";
 import Repartidores from "./components/Repartidores";
 import MasaIA from "./components/MasaIA";
 import CommandBar from "./components/CommandBar/CommandBar";
 import ConfiguracionWeb from "./components/ConfiguracionWeb";
+import { apiFetch } from "./services/api";
 
 import { API_URL, SOCKET_URL } from "./config/api";
 
@@ -44,6 +46,7 @@ const permisosPorRol = {
   "rentabilidad",
   "produccion",
   "configuracionWeb",
+  "sitioWeb",
 ],
 
   cajero: [
@@ -134,6 +137,10 @@ const menuCompleto = [
     pantalla: "configuracionWeb",
     texto: "🌐 Configuración Web",
   },
+  {
+  pantalla: "sitioWeb",
+  texto: "🌐 Sitio Web",
+},
 ];
 
 function normalizarRol(rol = "") {
@@ -162,20 +169,8 @@ function obtenerPantallaInicial(rol) {
 }
 
 async function obtenerLista(endpoint) {
-  const token = localStorage.getItem("masaos_token")
-  
-console.log(
-  "TOKEN OBTENER LISTA:",
-  localStorage.getItem("masaos_token")
-);
-  const respuesta = await fetch(
-    `${API_URL}/${endpoint}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const respuesta = await apiFetch(`/${endpoint}`);
+      
   if (!respuesta.ok) {
     throw new Error(
       `No se pudo cargar ${endpoint}.`
@@ -183,7 +178,6 @@ console.log(
   }
 
   const datos = await respuesta.json();
-
   return Array.isArray(datos)
     ? datos
     : [];
@@ -538,6 +532,9 @@ if (verificandoSesion) {
           "repartidores" && (
           <Repartidores />
         )}
+        {pantalla === "sitioWeb" && (
+  <SitioWeb />
+)}
 
         {pantalla === "productos" && (
           <Productos
@@ -604,7 +601,8 @@ if (verificandoSesion) {
   onNavigate={(pantalla) => {
     setPantalla(pantalla);
   }}
-/>
+  />
+  
     </div>
   );
 }

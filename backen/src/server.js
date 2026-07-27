@@ -1,4 +1,4 @@
-require("dotenv").config();
+ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
@@ -35,6 +35,9 @@ const multimediaRouter = require(
 );
 const crearRepartidoresRouter = require("./routes/repartidores");
 const crearMasaIARouter = require("./routes/masaia");
+const promocionesRouter = require(
+  "./routes/promociones"
+);
 
 const app = express();
 
@@ -242,6 +245,10 @@ app.use(
 app.use(
   "/api/multimedia",
   multimediaRouter
+);
+app.use(
+  "/api/promociones",
+  promocionesRouter
 );
 
 

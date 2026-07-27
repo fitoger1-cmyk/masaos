@@ -1,0 +1,19 @@
+[
+  {
+    "nombre": "combo clasico",
+    "descripcion": "muzzarela mas pasta frola",
+    "imagen": "https://res.cloudinary.com/aobqmtmm/image/upload/v1785095679/masaos/productos/jww62ticr6dvoclapaar.jpg",
+    "precioAnterior": 0,
+    "precioPromocional": 18000,
+    "inicio": "2026-07-26",
+    "fin": "2026-08-03",
+    "mostrarInicio": true,
+    "mostrarCarrusel": false,
+    "mostrarDestacados": false,
+    "mostrarPopup": false,
+    "activa": true,
+    "actualizadoEn": "2026-07-26T19:55:56.693Z",
+    "id": 1785095756693,
+    "creadoEn": "2026-07-26T19:55:56.693Z"
+  }
+]

@@ -1,16 +1,19 @@
 {
-  "nombre": "el club de la masa g",
+  "nombre": "El Club De La Masa G",
   "telefono": "1140480762",
   "whatsapp": true,
-  "instagram": "",
+  "instagram": "clubdelamasag",
   "facebook": "",
   "tiktok": "",
   "direccion": "Pilar, Buenos Aires",
   "envio": "Sin cargo",
   "costoEnvio": 0,
-  "radioEntregaKm": 0,
+  "radioEntregaKm": 10,
   "textoPrincipal": "Las mejores pizzas de Pilar",
-  "textoSecundario": "",
+  "textoSecundario": "el club",
+  "mensajeWhatsApp": "Hola, quiero hacer un pedido.",
+  "mostrarPromociones": true,
+  "mostrarDestacados": true,
   "horarios": {
     "mediodia": "11:00 - 16:00",
     "noche": "19:00 - 23:00"
@@ -26,10 +29,32 @@
   },
   "mercadoPago": true,
   "pedidosYa": true,
-  "logo": "https://res.cloudinary.com/aobqmtmm/image/upload/v1784821679/masaos/configuracion/logo-principal.jpg",
-  "banner": "",
+  "logo": "https://res.cloudinary.com/aobqmtmm/image/upload/v1785033571/masaos/configuracion/logo-principal.jpg",
+  "banner": "/imagenes/banner.jpg",
   "colorPrincipal": "#b71c1c",
   "colorSecundario": "#f5f5f5",
   "activo": true,
-  "actualizadoEn": "2026-07-23T15:49:53.752Z"
+  "negocio": {
+    "nombre": "El Club De La Masa G",
+    "telefono": "1140480762",
+    "direccion": "Pilar, Buenos Aires",
+    "envio": "Sin cargo"
+  },
+  "web": {
+    "logo": "https://res.cloudinary.com/aobqmtmm/image/upload/v1785033571/masaos/configuracion/logo-principal.jpg",
+    "colorPrincipal": "#b71c1c",
+    "colorSecundario": "#f5f5f5",
+    "activo": true
+  },
+  "bannerConfig": {
+    "imagen": "https://res.cloudinary.com/aobqmtmm/image/upload/v1785081379/masaos/configuracion/banner-principal.jpg",
+    "titulo": "Las mejores pizzas de Pilar",
+    "subtitulo": "el club",
+    "textoBoton": "Ver menú",
+    "destino": "menu",
+    "urlPersonalizada": "",
+    "opacidad": 0.55,
+    "activo": true
+  },
+  "actualizadoEn": "2026-07-26T23:35:30.574Z"
 }
