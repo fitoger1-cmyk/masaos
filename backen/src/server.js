@@ -38,6 +38,10 @@ const crearMasaIARouter = require("./routes/masaia");
 const promocionesRouter = require(
   "./routes/promociones"
 );
+const mercadoPagoRouter =
+require("./routes/mercadoPago");
+const mercadoPagoWebhookRouter =
+  require("./routes/mercadoPagoWebhook");
 
 const app = express();
 
@@ -45,9 +49,15 @@ const app = express();
 const origenesPermitidos = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
+
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+
   "http://localhost:5500",
   "http://127.0.0.1:5500",
+
   "https://club-masa-web.vercel.app",
+  "https://masaos-web.vercel.app",
   "https://masaos-enterprise-panel.onrender.com",
 ];
 
@@ -70,6 +80,8 @@ const servidorHttp = http.createServer(app);
 const io = new Server(servidorHttp, {
   cors: configuracionCors,
 });
+
+app.set("io", io);
 io.on("connection", (socket) => {
   console.log(`Cliente conectado en tiempo real: ${socket.id}`);
 
@@ -80,6 +92,10 @@ io.on("connection", (socket) => {
 
 app.use(cors(configuracionCors));
 app.use(express.json());
+app.use(
+  "/api/mercadopago/webhook",
+  mercadoPagoWebhookRouter
+);
 app.get("/api/auth/me", autenticar, (req, res) => {
   res.json({
     usuario: req.usuario,
@@ -95,6 +111,10 @@ app.use(
   "/api/usuarios",
   autenticar,
   usuariosPostgresRouter
+);
+app.use(
+  "/api/mercadopago",
+  mercadoPagoRouter
 );
 
 const productosPath = path.join(__dirname, "controllers", "productos.json");
@@ -150,6 +170,7 @@ app.use(
       pedidos = nuevosPedidos;
     },
     pedidosPath,
+    io,
   })
 );
 app.use(
