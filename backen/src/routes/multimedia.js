@@ -76,12 +76,14 @@ function obtenerCarpeta(tipo) {
 }
 
 function obtenerNombrePublico(tipo) {
+  const marcaTiempo = Date.now();
+
   if (tipo === "logo") {
-    return "logo-principal";
+    return `logo-principal-${marcaTiempo}`;
   }
 
   if (tipo === "banner") {
-    return "banner-principal";
+    return `banner-principal-${marcaTiempo}`;
   }
 
   return undefined;
