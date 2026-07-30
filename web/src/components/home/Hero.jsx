@@ -7,6 +7,7 @@ function Hero({
   envio,
   estiloHero,
 }) {
+  console.log("ESTILO HERO:", estiloHero);
   return (
     <section
       id="inicio"

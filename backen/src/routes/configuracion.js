@@ -401,9 +401,18 @@ mostrarDestacados: convertirBooleano(
       configuracionAnterior.pedidosYa
     ),
 
-    logo: limpiarTexto(body.logo),
+    logo: limpiarTexto(
+  body.logo ??
+  body.web?.logo ??
+  configuracionAnterior.logo
+),
 
-    banner: limpiarTexto(body.banner),
+    banner: limpiarTexto(
+  body.bannerConfig?.imagen ??
+  body.banner ??
+  configuracionAnterior.bannerConfig?.imagen ??
+  configuracionAnterior.banner
+),
 
     colorPrincipal: limpiarTexto(
       body.colorPrincipal
@@ -559,6 +568,12 @@ router.put("/", (req, res) => {
     const configuracionAnterior =
       leerConfiguracion();
 
+      console.log("========== PUT CONFIGURACION ==========");
+console.log("BODY RECIBIDO:");
+console.log(JSON.stringify(req.body, null, 2));
+console.log("=======================================");
+
+
     const configuracionActualizada =
       normalizarConfiguracion(
         req.body,
@@ -569,13 +584,8 @@ router.put("/", (req, res) => {
       configuracionActualizada
     );
 
-    res.json({
-      ok: true,
-      mensaje:
-        "Configuración actualizada correctamente.",
-      configuracion:
-        configuracionActualizada,
-    });
+    res.json(configuracionActualizada);
+
   } catch (error) {
     console.error(
       "Error actualizando configuración:",

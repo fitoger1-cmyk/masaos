@@ -251,7 +251,9 @@ console.log(
     }));
   }
 
-  async function guardarConfiguracion() {
+  async function guardarConfiguracion(
+  configuracionGuardar = configuracion
+) {
     try {
       setGuardando(true);
       setMensaje("");
@@ -259,7 +261,7 @@ console.log(
 
       const respuesta = await apiFetch("/configuracion", {
   method: "PUT",
-  body: JSON.stringify(configuracion),
+  body: JSON.stringify(configuracionGuardar),
 });
 
 if (!respuesta.ok) {
@@ -276,25 +278,25 @@ if (!respuesta.ok) {
 
 const datosGuardados = await respuesta.json();
 
-      setConfiguracion({
-        ...configuracionInicial,
-        ...datosGuardados,
+      setConfiguracion((anterior) => ({
+  ...anterior,
+  ...datosGuardados,
 
-        negocio: {
-          ...configuracionInicial.negocio,
-          ...(datosGuardados.negocio || {}),
-        },
+  negocio: {
+    ...anterior.negocio,
+    ...(datosGuardados.negocio || {}),
+  },
 
-        web: {
-          ...configuracionInicial.web,
-          ...(datosGuardados.web || {}),
-        },
+  web: {
+    ...anterior.web,
+    ...(datosGuardados.web || {}),
+  },
 
-        bannerConfig: {
-          ...configuracionInicial.bannerConfig,
-          ...(datosGuardados.bannerConfig || {}),
-        },
-      });
+  bannerConfig: {
+    ...anterior.bannerConfig,
+    ...(datosGuardados.bannerConfig || {}),
+  },
+}));
 
       setMensaje("Configuración guardada correctamente.");
     } catch (err) {
@@ -333,10 +335,10 @@ const datosGuardados = await respuesta.json();
         </div>
 
         <button
-          type="button"
-          onClick={guardarConfiguracion}
-          disabled={guardando}
-        >
+  type="button"
+  onClick={() => guardarConfiguracion()}
+  disabled={guardando}
+>
           {guardando
             ? "Guardando..."
             : "Guardar cambios"}
@@ -373,9 +375,11 @@ const datosGuardados = await respuesta.json();
         />
 
         <BannerManager
-          bannerConfig={configuracion.bannerConfig}
-          actualizarBanner={actualizarBanner}
-         />
+  configuracion={configuracion}
+  bannerConfig={configuracion.bannerConfig}
+  actualizarBanner={actualizarBanner}
+  guardarConfiguracion={guardarConfiguracion}
+/>
         <PromocionesManager />
       </div>
     </section>

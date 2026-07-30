@@ -2,9 +2,12 @@ import { useState } from "react";
 import { apiFetch } from "../../services/api";
 
 function BannerManager({
+  configuracion,
   bannerConfig,
   actualizarBanner,
-}) {
+  guardarConfiguracion,
+})
+ {
   const [archivoBanner, setArchivoBanner] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
 
@@ -31,11 +34,27 @@ function BannerManager({
 
     const datos = await respuesta.json();
 
-    actualizarBanner({
-      imagen: datos.url,
-    });
+    const separador = datos.url.includes("?") ? "&" : "?";
 
-    alert("Banner subido correctamente.");
+const urlBannerActualizada =
+  `${datos.url}${separador}v=${Date.now()}`;
+
+const nuevaConfiguracion = {
+  ...configuracion,
+
+   banner: urlBannerActualizada,
+
+  bannerConfig: {
+    ...configuracion.bannerConfig,
+    imagen: urlBannerActualizada,
+  },
+};
+
+actualizarBanner({
+  imagen: urlBannerActualizada,
+});
+
+
   } catch (error) {
     console.error(error);
     alert(error.message);
