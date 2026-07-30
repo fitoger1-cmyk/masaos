@@ -1,9 +1,12 @@
- require("dotenv").config();
+ const path = require("path");
+
+require("dotenv").config({
+  path: path.join(__dirname, "../.env"),
+});
 
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
-const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
 const {
@@ -15,6 +18,9 @@ const {
 const {
   inicializarUsuarios,
 } = require("./database/inicializarUsuarios");
+const {
+  inicializarVentas,
+} = require("./database/inicializarVentas");
 
 const usuariosPostgresRouter = require(
   "./routes/usuariosPostgres"
@@ -691,6 +697,7 @@ async function iniciarServidor() {
   try {
     await inicializarProductos();
     await inicializarUsuarios();
+    await inicializarVentas();
 
     servidorHttp.listen(
       PORT,
