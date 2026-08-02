@@ -62,6 +62,14 @@ web: {
   colorSecundario: "#f5f5f5",
   activo: true,
 },
+secciones: {
+  hero: true,
+  promociones: true,
+  productos: true,
+  categorias: true,
+  nosotros: true,
+  footer: true,
+},
 
 bannerConfig: {
   imagen: "",
@@ -163,6 +171,11 @@ function leerConfiguracion() {
   web: {
     ...configuracionInicial.web,
     ...(configuracion.web || {}),
+
+    secciones: {
+  ...configuracionInicial.secciones,
+  ...(configuracion.secciones || {}),
+},
 
     logo:
       configuracion.web?.logo ||
@@ -532,6 +545,42 @@ bannerConfig: {
     configuracionAnterior
       .bannerConfig?.activo ??
       true
+  ),
+},
+secciones: {
+  hero: convertirBooleano(
+    body.secciones?.hero,
+    configuracionAnterior.secciones?.hero ?? true
+  ),
+
+  promociones: convertirBooleano(
+    body.secciones?.promociones,
+    configuracionAnterior.secciones?.promociones ?? true
+  ),
+
+  productos: convertirBooleano(
+    body.secciones?.productos,
+    configuracionAnterior.secciones?.productos ?? true
+  ),
+
+  categorias: convertirBooleano(
+    body.secciones?.categorias,
+    configuracionAnterior.secciones?.categorias ?? true
+  ),
+
+  nosotros: convertirBooleano(
+    body.secciones?.nosotros,
+    configuracionAnterior.secciones?.nosotros ?? true
+  ),
+   opiniones: convertirBooleano(
+    body.secciones?.opiniones,
+    configuracionAnterior
+      .secciones?.opiniones ?? false
+  ),
+
+  footer: convertirBooleano(
+    body.secciones?.footer,
+    configuracionAnterior.secciones?.footer ?? true
   ),
 },
     actualizadoEn: new Date().toISOString(),
