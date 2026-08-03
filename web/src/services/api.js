@@ -2,7 +2,14 @@ import { API_URL } from "../config/api";
 
 export async function obtenerConfiguracion() {
   const respuesta = await fetch(
-    `${API_URL}/configuracion`
+    `${API_URL}/configuracion?t=${Date.now()}`,
+    {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    }
   );
 
   if (!respuesta.ok) {
@@ -13,10 +20,16 @@ export async function obtenerConfiguracion() {
 
   return respuesta.json();
 }
-
 export async function obtenerProductos() {
   const respuesta = await fetch(
-    `${API_URL}/productos`
+    `${API_URL}/productos?t=${Date.now()}`,
+    {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    }
   );
 
   if (!respuesta.ok) {
