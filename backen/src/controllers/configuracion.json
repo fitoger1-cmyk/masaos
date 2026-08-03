@@ -1,6 +1,6 @@
 {
-  "nombre": "El Club De La Masa G",
-  "telefono": "1140480762",
+  "nombre": "El Club de la Masa G",
+  "telefono": "541140480762",
   "whatsapp": true,
   "instagram": "clubdelamasag",
   "facebook": "",
@@ -10,7 +10,7 @@
   "costoEnvio": 0,
   "radioEntregaKm": 10,
   "textoPrincipal": "Las mejores pizzas de Pilar",
-  "textoSecundario": "el club",
+  "textoSecundario": "Pizzas artesanales, focaccias y postres elaborados con ingredientes de calidad.",
   "mensajeWhatsApp": "Hola, quiero hacer un pedido.",
   "mostrarPromociones": true,
   "mostrarDestacados": true,
@@ -29,32 +29,41 @@
   },
   "mercadoPago": true,
   "pedidosYa": true,
-  "logo": "https://res.cloudinary.com/aobqmtmm/image/upload/v1785033571/masaos/configuracion/logo-principal.jpg",
+  "logo": "/imagenes/logo.png",
   "banner": "/imagenes/banner.jpg",
   "colorPrincipal": "#b71c1c",
   "colorSecundario": "#f5f5f5",
   "activo": true,
   "negocio": {
-    "nombre": "El Club De La Masa G",
-    "telefono": "1140480762",
+    "nombre": "El Club de la Masa G",
+    "telefono": "541140480762",
     "direccion": "Pilar, Buenos Aires",
     "envio": "Sin cargo"
   },
   "web": {
-    "logo": "https://res.cloudinary.com/aobqmtmm/image/upload/v1785033571/masaos/configuracion/logo-principal.jpg",
+    "logo": "/imagenes/logo.png",
     "colorPrincipal": "#b71c1c",
     "colorSecundario": "#f5f5f5",
     "activo": true
   },
+  "secciones": {
+    "hero": true,
+    "promociones": false,
+    "productos": true,
+    "categorias": true,
+    "nosotros": true,
+    "opiniones": false,
+    "footer": true
+  },
   "bannerConfig": {
-    "imagen": "https://res.cloudinary.com/aobqmtmm/image/upload/v1785081379/masaos/configuracion/banner-principal.jpg",
+    "imagen": "/imagenes/banner.jpg",
     "titulo": "Las mejores pizzas de Pilar",
-    "subtitulo": "el club",
-    "textoBoton": "Ver menú",
+    "subtitulo": "Pizzas artesanales, focaccias y pasteler�a",
+    "textoBoton": "Ver men�",
     "destino": "menu",
     "urlPersonalizada": "",
     "opacidad": 0.55,
     "activo": true
   },
-  "actualizadoEn": "2026-07-26T23:35:30.574Z"
+  "actualizadoEn": "2026-08-03T01:08:44.672Z"
 }
