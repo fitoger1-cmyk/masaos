@@ -618,11 +618,7 @@ router.put("/", (req, res) => {
     const configuracionAnterior =
       leerConfiguracion();
 
-      console.log("========== PUT CONFIGURACION ==========");
-console.log("BODY RECIBIDO:");
-console.log(JSON.stringify(req.body, null, 2));
-console.log("=======================================");
-
+      
 
     const configuracionActualizada =
   normalizarConfiguracion(
@@ -630,17 +626,7 @@ console.log("=======================================");
     configuracionAnterior
   );
 
-console.log(
-  "SECCIONES NORMALIZADAS:"
-);
 
-console.log(
-  JSON.stringify(
-    configuracionActualizada.secciones,
-    null,
-    2
-  )
-);
 
 guardarConfiguracion(
   configuracionActualizada

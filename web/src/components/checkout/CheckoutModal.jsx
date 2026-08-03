@@ -188,12 +188,17 @@ function CheckoutModal({
     setEnviando(true);
     setErrorEnvio("");
 
+    console.log("ITEMS:", items);
+    console.log("ITEMS.LENGTH:", items.length);
+
     const pedido = construirPedido({
   datos,
   items,
   subtotal,
   cantidadTotal,
 });
+console.log("PEDIDO COMPLETO:", pedido);
+console.log("PRODUCTOS DEL PEDIDO:", pedido.productos);
 
     console.log(
       "Enviando pedido a MasaOS:",

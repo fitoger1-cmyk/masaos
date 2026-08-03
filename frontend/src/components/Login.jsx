@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { API_URL } from "../config/api";
+import {
+  API_URL,
+} from "../config/api";
 
 function Login({ onLogin }) {
   const [formulario, setFormulario] = useState({
@@ -27,23 +29,34 @@ function Login({ onLogin }) {
 
     try {
       const respuesta = await fetch(
-        `${API_URL}/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formulario),
-        }
-      );
+  `${API_URL}/login`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      usuario: formulario.usuario,
+      password: formulario.password,
+    }),
+  }
+);
 
-      const datos = await respuesta.json();
+      const contenido = await respuesta.text();
 
-      if (!respuesta.ok) {
-        throw new Error(
-          datos.error || "No se pudo iniciar sesión."
-        );
-      }
+console.log("URL login:", respuesta.url);
+console.log("Estado login:", respuesta.status);
+console.log("Respuesta login:", contenido);
+
+let datos;
+
+try {
+  datos = JSON.parse(contenido);
+} catch {
+  throw new Error(
+    `El servidor respondió HTML en ${respuesta.url}. Revisá la ruta del login.`
+  );
+}
 
       onLogin(
   datos.usuario,

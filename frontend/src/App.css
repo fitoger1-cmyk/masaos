@@ -1535,6 +1535,144 @@ button:disabled {
   cursor: not-allowed;
   box-shadow: none;
 }
+.caja-pedidos-web {
+  margin-bottom: 22px;
+  padding: 18px;
+  border: 1px solid #dedede;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.caja-pedidos-web__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.caja-pedidos-web__header h3 {
+  margin: 0;
+}
+
+.caja-pedidos-web__header p {
+  margin: 4px 0 0;
+  color: #666;
+}
+
+.caja-pedidos-web__header button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.caja-pedidos-web__lista {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.caja-pedido-web {
+  padding: 14px;
+  border: 2px solid #ececec;
+  border-radius: 14px;
+  background: #fafafa;
+}
+
+.caja-pedido-web.seleccionado {
+  border-color: #1f9d55;
+  background: #ecfff3;
+}
+
+.caja-pedido-web__principal {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.caja-pedido-web__principal > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.caja-pedido-web .estado {
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #ececec;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.caja-pedido-web .estado.nuevo {
+  background: #fff1bf;
+}
+
+.caja-pedido-web .estado.preparando {
+  background: #dceeff;
+}
+
+.caja-pedido-web .estado.listo {
+  background: #dff7e7;
+}
+
+.caja-pedido-web__datos {
+  margin: 13px 0;
+}
+
+.caja-pedido-web__datos p {
+  margin: 5px 0;
+}
+
+.caja-pedido-web__importar {
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 10px;
+  background: #c51e1e;
+  color: white;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.caja-pedido-web__importar:disabled {
+  background: #1f9d55;
+  cursor: default;
+}
+
+.caja-pedidos-web__vacio {
+  padding: 20px;
+  text-align: center;
+  background: #f6f6f6;
+  border-radius: 12px;
+}
+
+.caja-pedidos-web__vacio span {
+  font-size: 28px;
+}
+
+.caja-pedidos-web__error {
+  padding: 12px;
+  border: 1px solid #e6a8a8;
+  border-radius: 10px;
+  background: #fff1f1;
+  color: #9e1717;
+}
+
+@media (max-width: 700px) {
+  .caja-pedidos-web__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .caja-pedidos-web__lista {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* Pedidos en espera */
 

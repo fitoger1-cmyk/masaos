@@ -1,1 +1,1054 @@
-[]
+[
+  {
+    "id": 1,
+    "numeroPedido": "WEB-00001",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": 35000,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      },
+      {
+        "id": 4,
+        "nombre": "Fugazzeta Especial",
+        "categoria": "Pizza",
+        "precio": 18000,
+        "cantidad": 1,
+        "subtotal": 18000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 2,
+    "subtotal": 35000,
+    "costoEnvio": 0,
+    "total": 35000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-27",
+    "fechaHora": "2026-07-27T16:22:39.022Z",
+    "fechaActualizacion": "2026-07-27T16:59:26.343Z"
+  },
+  {
+    "id": 2,
+    "numeroPedido": "WEB-00002",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": 39999,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      },
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 2,
+    "subtotal": 37000,
+    "costoEnvio": 0,
+    "total": 37000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-27",
+    "fechaHora": "2026-07-27T16:48:09.598Z",
+    "fechaActualizacion": "2026-07-27T22:05:32.496Z"
+  },
+  {
+    "id": 3,
+    "numeroPedido": "WEB-00003",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": 20000,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 17000,
+    "costoEnvio": 0,
+    "total": 17000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T03:26:42.597Z",
+    "fechaActualizacion": "2026-07-28T03:27:40.041Z"
+  },
+  {
+    "id": 4,
+    "numeroPedido": "WEB-00004",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": 40000,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 5,
+        "nombre": "Calabresa Grande",
+        "categoria": "Pizza",
+        "precio": 15000,
+        "cantidad": 1,
+        "subtotal": 15000,
+        "observaciones": ""
+      },
+      {
+        "id": 4,
+        "nombre": "Fugazzeta Especial",
+        "categoria": "Pizza",
+        "precio": 18000,
+        "cantidad": 1,
+        "subtotal": 18000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 2,
+    "subtotal": 33000,
+    "costoEnvio": 0,
+    "total": 33000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T14:49:59.068Z",
+    "fechaActualizacion": "2026-07-28T14:51:00.963Z"
+  },
+  {
+    "id": 5,
+    "numeroPedido": "WEB-00005",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T18:17:04.527Z",
+    "fechaActualizacion": "2026-07-28T18:23:12.169Z"
+  },
+  {
+    "id": 6,
+    "numeroPedido": "WEB-00006",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": 20000,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 17000,
+    "costoEnvio": 0,
+    "total": 17000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T20:16:37.435Z",
+    "fechaActualizacion": "2026-07-28T20:17:12.065Z"
+  },
+  {
+    "id": 7,
+    "numeroPedido": "WEB-00007",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 1,
+        "nombre": "Muzzarella Grande",
+        "categoria": "Pizza",
+        "precio": 14000,
+        "cantidad": 1,
+        "subtotal": 14000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 14000,
+    "costoEnvio": 0,
+    "total": 14000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T20:18:14.959Z",
+    "fechaActualizacion": "2026-07-28T20:19:42.981Z"
+  },
+  {
+    "id": 8,
+    "numeroPedido": "WEB-00008",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": 20000,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 17000,
+    "costoEnvio": 0,
+    "total": 17000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T20:37:10.306Z",
+    "fechaActualizacion": "2026-07-28T20:38:13.450Z"
+  },
+  {
+    "id": 9,
+    "numeroPedido": "WEB-00009",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Efectivo",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.0",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T21:56:21.752Z",
+    "fechaActualizacion": "2026-07-28T21:56:50.036Z"
+  },
+  {
+    "id": 10,
+    "numeroPedido": "WEB-00010",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T22:31:32.265Z",
+    "fechaActualizacion": "2026-07-28T22:34:36.562Z"
+  },
+  {
+    "id": 11,
+    "numeroPedido": "WEB-00011",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 6,
+        "nombre": "Fungi y Trufa Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-28",
+    "fechaHora": "2026-07-28T22:43:30.939Z",
+    "fechaActualizacion": "2026-07-28T22:44:08.489Z"
+  },
+  {
+    "id": 12,
+    "numeroPedido": "WEB-00012",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T00:51:05.913Z",
+    "fechaActualizacion": "2026-07-29T02:01:49.995Z"
+  },
+  {
+    "id": 13,
+    "numeroPedido": "WEB-00013",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 5,
+        "nombre": "Calabresa Grande",
+        "categoria": "Pizza",
+        "precio": 15000,
+        "cantidad": 2,
+        "subtotal": 30000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 2,
+    "subtotal": 30000,
+    "costoEnvio": 0,
+    "total": 30000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T02:00:42.747Z",
+    "fechaActualizacion": "2026-07-29T02:01:31.756Z"
+  },
+  {
+    "id": 14,
+    "numeroPedido": "WEB-00014",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 2,
+        "subtotal": 40000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 2,
+    "subtotal": 40000,
+    "costoEnvio": 0,
+    "total": 40000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T02:14:24.945Z",
+    "fechaActualizacion": "2026-07-29T03:12:13.801Z"
+  },
+  {
+    "id": 15,
+    "numeroPedido": "WEB-00015",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T03:10:45.806Z",
+    "fechaActualizacion": "2026-07-29T03:12:19.375Z"
+  },
+  {
+    "id": 16,
+    "numeroPedido": "WEB-00016",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 17000,
+    "costoEnvio": 0,
+    "total": 17000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T03:14:47.197Z",
+    "fechaActualizacion": "2026-07-29T18:52:52.229Z"
+  },
+  {
+    "id": 17,
+    "numeroPedido": "WEB-00017",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 17000,
+    "costoEnvio": 0,
+    "total": 17000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T03:20:35.590Z",
+    "fechaActualizacion": "2026-07-29T18:52:08.918Z"
+  },
+  {
+    "id": 18,
+    "numeroPedido": "WEB-00018",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T14:03:59.984Z",
+    "fechaActualizacion": "2026-07-29T18:52:15.010Z"
+  },
+  {
+    "id": 19,
+    "numeroPedido": "WEB-00019",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 17000,
+    "costoEnvio": 0,
+    "total": 17000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T14:07:45.532Z",
+    "fechaActualizacion": "2026-07-29T18:52:19.747Z"
+  },
+  {
+    "id": 20,
+    "numeroPedido": "WEB-00020",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 17000,
+    "costoEnvio": 0,
+    "total": 17000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T14:12:35.364Z",
+    "fechaActualizacion": "2026-07-29T18:52:25.125Z"
+  },
+  {
+    "id": 21,
+    "numeroPedido": "WEB-00021",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T15:23:14.578Z",
+    "fechaActualizacion": "2026-07-29T18:52:31.471Z"
+  },
+  {
+    "id": 22,
+    "numeroPedido": "WEB-00022",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T15:27:13.331Z",
+    "fechaActualizacion": "2026-07-29T18:52:35.315Z"
+  },
+  {
+    "id": 23,
+    "numeroPedido": "WEB-00023",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 3,
+        "nombre": "Bacon Grande",
+        "categoria": "Pizza",
+        "precio": 20000,
+        "cantidad": 1,
+        "subtotal": 20000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 20000,
+    "costoEnvio": 0,
+    "total": 20000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T15:53:01.914Z",
+    "fechaActualizacion": "2026-07-29T18:52:39.750Z"
+  },
+  {
+    "id": 24,
+    "numeroPedido": "WEB-00024",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 2,
+        "nombre": "Napolitana Grande",
+        "categoria": "Pizza",
+        "precio": 17000,
+        "cantidad": 1,
+        "subtotal": 17000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 17000,
+    "costoEnvio": 0,
+    "total": 17000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T16:13:22.143Z",
+    "fechaActualizacion": "2026-07-29T18:52:44.082Z"
+  },
+  {
+    "id": 25,
+    "numeroPedido": "WEB-00025",
+    "cliente": {
+      "nombre": "Germán Adolfo",
+      "telefono": "+541176192566"
+    },
+    "entrega": {
+      "tipo": "Delivery",
+      "direccion": "Gral. Viamonte 814",
+      "localidad": "Pilar Centro",
+      "referencia": "",
+      "costo": 0
+    },
+    "pago": {
+      "metodo": "Mercado Pago",
+      "pagaCon": null,
+      "estado": "Pendiente"
+    },
+    "productos": [
+      {
+        "id": 1,
+        "nombre": "Muzzarella Grande",
+        "categoria": "Pizza",
+        "precio": 14000,
+        "cantidad": 1,
+        "subtotal": 14000,
+        "observaciones": ""
+      }
+    ],
+    "cantidadTotal": 1,
+    "subtotal": 14000,
+    "costoEnvio": 0,
+    "total": 14000,
+    "observaciones": "",
+    "origen": "Web 3.2",
+    "estado": "Entregado",
+    "fecha": "2026-07-29",
+    "fechaHora": "2026-07-29T16:19:45.987Z",
+    "fechaActualizacion": "2026-07-29T18:52:48.187Z"
+  }
+]

@@ -1,0 +1,129 @@
+/* =========================================================
+   MASAOS DESIGN SYSTEM
+   Animaciones reutilizables
+========================================================= */
+
+@keyframes masaosFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes masaosSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes masaosSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes masaosScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes masaosPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes masaosSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.masaos-fade-in {
+  animation:
+    masaosFadeIn
+    var(--transition-normal)
+    both;
+}
+
+.masaos-slide-up {
+  animation:
+    masaosSlideUp
+    var(--transition-slow)
+    both;
+}
+
+.masaos-slide-left {
+  animation:
+    masaosSlideInLeft
+    var(--transition-slow)
+    both;
+}
+
+.masaos-scale-in {
+  animation:
+    masaosScaleIn
+    var(--transition-normal)
+    both;
+}
+
+.masaos-hover-lift {
+  transition:
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+.masaos-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.masaos-spinner {
+  width: 32px;
+  height: 32px;
+
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+
+  animation: masaosSpin 700ms linear infinite;
+}
+
+/* Evita movimientos si el usuario los desactiva */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

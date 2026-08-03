@@ -21,6 +21,16 @@ const {
 const {
   inicializarVentas,
 } = require("./database/inicializarVentas");
+const {
+  inicializarStock,
+} = require("./database/inicializarStock");
+const stockRouter = require("./routes/stock");
+const crearComprasRouter = require(
+  "./routes/compras"
+);
+const {
+  inicializarCompras,
+} = require("./database/inicializarCompras");
 
 const usuariosPostgresRouter = require(
   "./routes/usuariosPostgres"
@@ -395,58 +405,18 @@ app.put("/api/recetas/:id", (req, res) => {
 });
 
  
-app.get("/api/stock", (req, res) => {
-  res.json(stock);
-});
+// app.get("/api/stock", (req, res) => {
+//   res.json(stock);
+// });
+app.use("/api/stock", stockRouter);
 
-app.get("/api/compras", (req, res) => {
-  res.json(compras);
-});
+app.use(
+  "/api/compras",
+  crearComprasRouter({
+    io,
+  })
+);
 
-app.post("/api/compras", (req, res) => {
-  const items = req.body.items || [];
-
-  if (!req.body.proveedor || items.length === 0) {
-    return res.status(400).json({
-      error: "La compra debe tener proveedor y al menos un ingrediente",
-    });
-  }
-
-  const totalCompra = items.reduce((total, item) => total + Number(item.precio), 0);
-
-  const nuevaCompra = {
-    id: compras.length + 1,
-    proveedor: req.body.proveedor,
-    tipoComprobante: req.body.tipoComprobante,
-    numeroComprobante: req.body.numeroComprobante,
-    items,
-    total: totalCompra,
-    fecha: new Date().toISOString().split("T")[0],
-  };
-
-  compras.push(nuevaCompra);
-
-  items.forEach((item) => {
-    const itemStock = stock.find((s) => s.ingrediente === item.ingrediente);
-
-    if (itemStock) {
-      itemStock.cantidad = Number(
-        (itemStock.cantidad + Number(item.cantidad)).toFixed(2)
-      );
-    }
-  });
-
-  fs.writeFileSync(comprasPath, JSON.stringify(compras, null, 2));
-  fs.writeFileSync(insumosPath, JSON.stringify(stock, null, 2));
-  res.json(nuevaCompra);
-});
-
-app.get("/api/proveedores", (req, res) => {
-  res.json(proveedores);
-});
-app.get("/api/clientes", (req, res) => {
-  res.json(clientes);
-});
 
 // Obtener todos los usuarios
 app.get("/api/usuarios", (req, res) => {
@@ -614,11 +584,6 @@ app.patch("/api/usuarios/:id/estado", (req, res) => {
   });
 });
 
-app.get("/api/compras/reset", (req, res) => {
-  compras = [];
-  fs.writeFileSync(comprasPath, JSON.stringify(compras, null, 2));
-  res.json({ ok: true, mensaje: "Compras limpiadas", compras });
-});
 // Iniciar sesión
 app.post("/api/login", (req, res) => {
   const nombreUsuario = String(
@@ -698,6 +663,8 @@ async function iniciarServidor() {
     await inicializarProductos();
     await inicializarUsuarios();
     await inicializarVentas();
+    await inicializarStock();
+    await inicializarCompras();
 
     servidorHttp.listen(
       PORT,

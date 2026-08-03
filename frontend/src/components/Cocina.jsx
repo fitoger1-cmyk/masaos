@@ -15,6 +15,41 @@ import {
 import CocinaColumna from "./Cocina/CocinaColumna";
 import CocinaToolbar from "./Cocina/CocinaToolbar";
 
+const ESTADOS_COCINA = [
+  "Nuevo",
+  "Preparando",
+  "Listo",
+];
+
+function obtenerFechaPedido(pedido) {
+  const fecha =
+    pedido.fechaHora ||
+    pedido.fechaActualizacion ||
+    pedido.fecha;
+
+  if (!fecha) {
+    return null;
+  }
+
+  const fechaConvertida = new Date(fecha);
+
+  return Number.isNaN(fechaConvertida.getTime())
+    ? null
+    : fechaConvertida;
+}
+
+function ordenarPedidos(pedidos, horaActual) {
+  return [...pedidos].sort((a, b) => {
+    const fechaA =
+      obtenerFechaPedido(a)?.getTime() || horaActual;
+
+    const fechaB =
+      obtenerFechaPedido(b)?.getTime() || horaActual;
+
+    return fechaA - fechaB;
+  });
+}
+
 
 function Cocina() {
   const [pedidos, setPedidos] = useState([]);
@@ -94,8 +129,8 @@ function Cocina() {
         }
 
         const respuesta = await fetch(
-          `${API_URL}/ventas`
-        );
+  `${API_URL}/pedidos`
+);
 
         if (!respuesta.ok) {
           throw new Error(
@@ -199,13 +234,18 @@ function Cocina() {
       console.log("Cocina conectada en tiempo real.");
     });
 
-    socket.on("venta:nueva", () => {
-      cargarPedidos(false);
-    });
+    socket.on("pedido:nuevo", () => {
+  console.log("Nuevo pedido recibido");
+  cargarPedidos(false);
+});
 
-    socket.on("venta:estado", () => {
-      cargarPedidos(false);
-    });
+socket.on("pedido:estado-actualizado", () => {
+  cargarPedidos(false);
+});
+
+socket.on("pedidos:actualizados", () => {
+  cargarPedidos(false);
+});
 
     socket.on("connect_error", (errorSocket) => {
       console.warn(
@@ -259,7 +299,7 @@ function Cocina() {
       setCambiandoPedidoId(pedido.id);
 
       const respuesta = await fetch(
-        `${API_URL}/ventas/${pedido.id}/estado`,
+  `${API_URL}/pedidos/${pedido.id}/estado`,
         {
           method: "PUT",
           headers: {

@@ -44,6 +44,14 @@ const configuracionInicial = {
     colorSecundario: "#f5f5f5",
     activo: true,
   },
+  secciones: {
+  hero: true,
+  promociones: true,
+  productos: true,
+  categorias: true,
+  nosotros: true,
+  footer: true,
+},
 
   bannerConfig: {
     imagen: "",
@@ -86,6 +94,7 @@ function normalizarCategoria(
 function combinarConfiguracion(
   datos = {}
 ) {
+  
   return {
     ...configuracionInicial,
     ...datos,
@@ -94,6 +103,10 @@ function combinarConfiguracion(
       ...configuracionInicial.negocio,
       ...(datos.negocio || {}),
     },
+    secciones: {
+  ...configuracionInicial.secciones,
+  ...(datos.secciones || {}),
+},
 
     web: {
       ...configuracionInicial.web,
@@ -313,6 +326,11 @@ export function WebProvider({
 
   const valorContexto = {
     configuracion,
+
+     secciones: {
+  ...configuracionInicial.secciones,
+  ...(configuracion.secciones || {}),
+},
     productos,
     productosDestacados,
     categorias,
@@ -340,12 +358,13 @@ export function WebProvider({
 
     recargarWeb: cargarWeb,
   };
+  
 
   return (
-    <WebContext.Provider
-      value={valorContexto}
-    >
-      {children}
-    </WebContext.Provider>
-  );
+  <WebContext.Provider
+    value={valorContexto}
+  >
+    {children}
+  </WebContext.Provider>
+);
 }

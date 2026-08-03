@@ -9,6 +9,7 @@
 import CatalogoProductos from "./Caja/CatalogoProductos";
 import PedidoActual from "./Caja/PedidoActual";
 import PedidosEnEspera from "./Caja/PedidosEnEspera";
+import PedidosWeb from "./Caja/PedidosWeb";
 import ProductoModal from "./Caja/ProductoModal";
 
 import {
@@ -31,6 +32,10 @@ function Caja({
     useState("");
   const [ultimaVenta, setUltimaVenta] =
     useState(null);
+    const [
+  pedidoWebActual,
+  setPedidoWebActual,
+] = useState(null);
   const [cobrando, setCobrando] = useState(false);
 
   const [nombreCliente, setNombreCliente] =
@@ -256,6 +261,186 @@ function Caja({
       )
     );
   }
+function importarPedidoWeb(pedido) {
+  if (!pedido) {
+    return;
+  }
+
+  if (carrito.length > 0) {
+    const reemplazar = window.confirm(
+      "Hay un pedido cargado en Caja. ¿Querés reemplazarlo por el pedido web?"
+    );
+
+    if (!reemplazar) {
+      return;
+    }
+  }
+
+  const productosRecibidos =
+    Array.isArray(pedido.productos)
+      ? pedido.productos
+      : [];
+
+  if (productosRecibidos.length === 0) {
+    alert(
+      "El pedido web no contiene productos válidos."
+    );
+
+    return;
+  }
+
+  const productosParaCaja =
+    productosRecibidos.map(
+      (producto, indice) => ({
+        carritoId: `web-${
+          pedido.id
+        }-${
+          producto.id ?? indice
+        }-${Date.now()}`,
+
+        id:
+          producto.id ??
+          indice + 1,
+
+        nombre:
+          producto.nombre ||
+          `Producto ${indice + 1}`,
+
+        categoria:
+          producto.categoria ||
+          "Otros",
+
+        precio:
+          Number(producto.precio) ||
+          0,
+
+        cantidad:
+          Number(producto.cantidad) ||
+          1,
+
+        imagen:
+          producto.imagen || "",
+
+        observacion:
+          producto.observaciones ||
+          producto.observacion ||
+          "",
+      })
+    );
+
+  const cliente =
+    pedido.cliente &&
+    typeof pedido.cliente === "object"
+      ? pedido.cliente
+      : {
+          nombre:
+            pedido.cliente ||
+            "Cliente web",
+
+          telefono:
+            pedido.telefono || "",
+        };
+
+  const entrega =
+    pedido.entrega &&
+    typeof pedido.entrega === "object"
+      ? pedido.entrega
+      : {
+          tipo:
+            pedido.tipoEntrega ||
+            pedido.tipoPedido ||
+            "Retiro",
+
+          direccion:
+            pedido.direccion || "",
+        };
+
+  const pago =
+    pedido.pago &&
+    typeof pedido.pago === "object"
+      ? pedido.pago
+      : {
+          metodo:
+            pedido.formaPago ||
+            "Efectivo",
+
+          pagaCon:
+            pedido.montoRecibido ||
+            "",
+        };
+
+  const tipoNormalizado =
+    String(entrega.tipo || "")
+      .toLowerCase() === "delivery"
+      ? "Delivery"
+      : "Retiro";
+
+  const formaPagoNormalizada =
+    String(pago.metodo || "")
+      .toLowerCase() === "efectivo"
+      ? "Efectivo"
+      : String(pago.metodo || "")
+          .toLowerCase() ===
+        "mercado pago"
+      ? "Mercado Pago"
+      : String(pago.metodo || "")
+          .toLowerCase() ===
+        "transferencia"
+      ? "Transferencia"
+      : String(pago.metodo || "")
+          .toLowerCase() ===
+        "tarjeta"
+      ? "Tarjeta"
+      : "Efectivo";
+
+  setCarrito(productosParaCaja);
+
+  setNombreCliente(
+    cliente.nombre ||
+      "Cliente web"
+  );
+
+  setTelefonoCliente(
+    cliente.telefono || ""
+  );
+
+  setTipoPedido(tipoNormalizado);
+
+  setDireccionCliente(
+    tipoNormalizado === "Delivery"
+      ? entrega.direccion || ""
+      : ""
+  );
+
+  setNumeroMesa("");
+
+  setObservaciones(
+    pedido.observaciones || ""
+  );
+
+  setFormaPago(
+    formaPagoNormalizada
+  );
+
+  setMontoRecibido(
+    formaPagoNormalizada === "Efectivo" &&
+      pago.pagaCon
+      ? String(pago.pagaCon)
+      : ""
+  );
+
+  setDescuentoTipo("Porcentaje");
+  setDescuentoValor("");
+  setUltimaVenta(null);
+  setPedidoWebActual(pedido);
+
+  alert(
+    `${
+      pedido.numeroPedido ||
+      `Pedido #${pedido.id}`
+    } cargado correctamente en Caja.`
+  );
+}
 
   const limpiarPedido = useCallback(() => {
     setCarrito([]);
@@ -269,6 +454,7 @@ function Caja({
     setObservaciones("");
     setDescuentoTipo("Porcentaje");
     setDescuentoValor("");
+    setPedidoWebActual(null);
   }, []);
 
   function nuevaVenta() {
@@ -387,7 +573,7 @@ function Caja({
   }
 
   const cobrar = useCallback(async () => {
-    if (cobrando || !validarPedido()) {
+       if (cobrando || !validarPedido()) {
       return;
     }
 
@@ -485,7 +671,43 @@ function Caja({
       setDescuentoValor("");
 
       await actualizarDatosRelacionados();
+if (pedidoWebActual?.id) {
+  try {
+    const respuestaPedido = await fetch(
+      `${API_URL}/pedidos/${pedidoWebActual.id}/estado`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          estado: "Entregado",
+        }),
+      }
+    );
 
+    const datosPedido =
+      await respuestaPedido.json();
+
+    if (!respuestaPedido.ok) {
+      throw new Error(
+        datosPedido.error ||
+          "No se pudo actualizar el pedido web."
+      );
+    }
+
+    setPedidoWebActual(null);
+  } catch (errorPedido) {
+    console.error(
+      "La venta se cobró, pero no se actualizó el pedido web:",
+      errorPedido
+    );
+
+    alert(
+      "La venta fue cobrada, pero el pedido web no pudo marcarse como entregado."
+    );
+  }
+}
       alert("Venta cobrada correctamente.");
     } catch (error) {
       console.error(
@@ -516,50 +738,12 @@ function Caja({
     totalPedido,
     formaPago,
     montoRecibido,
+    pedidoWebActual,
     vuelto,
     setVentas,
     setStock,
     setClientes,
   ]);
-
-  useEffect(() => {
-    function manejarAtajos(evento) {
-      if (evento.key === "F2") {
-        evento.preventDefault();
-        buscadorRef.current?.focus();
-      }
-
-      if (evento.key === "F5") {
-        evento.preventDefault();
-        cobrar();
-      }
-
-      if (evento.key === "Escape") {
-        evento.preventDefault();
-
-        if (
-          carrito.length > 0 &&
-          window.confirm(
-            "¿Vaciar el pedido actual?"
-          )
-        ) {
-          limpiarPedido();
-        }
-      }
-    }
-
-    window.addEventListener(
-      "keydown",
-      manejarAtajos
-    );
-
-    return () =>
-      window.removeEventListener(
-        "keydown",
-        manejarAtajos
-      );
-  }, [carrito.length, cobrar, limpiarPedido]);
-
   function ponerPedidoEnEspera() {
     if (carrito.length === 0) {
       alert(
@@ -602,6 +786,46 @@ function Caja({
 
     limpiarPedido();
   }
+
+  useEffect(() => {
+    function manejarAtajos(evento) {
+      if (evento.key === "F2") {
+        evento.preventDefault();
+        buscadorRef.current?.focus();
+      }
+
+      if (evento.key === "F5") {
+        evento.preventDefault();
+        cobrar();
+      }
+
+      if (evento.key === "Escape") {
+        evento.preventDefault();
+
+        if (
+          carrito.length > 0 &&
+          window.confirm(
+            "¿Vaciar el pedido actual?"
+          )
+        ) {
+          limpiarPedido();
+        }
+      }
+    }
+
+    window.addEventListener(
+      "keydown",
+      manejarAtajos
+    );
+
+    return () =>
+      window.removeEventListener(
+        "keydown",
+        manejarAtajos
+      );
+  }, [carrito.length, cobrar, limpiarPedido]);
+
+  
 
   function recuperarPedido(pedido) {
     if (carrito.length > 0) {
@@ -946,6 +1170,11 @@ function Caja({
 
       <div className="caja-layout">
         <div className="caja-productos-panel">
+          <PedidosWeb
+  onImportar={importarPedidoWeb}
+  pedidoSeleccionadoId={pedidoWebActual?.id}
+/>
+           
           <CatalogoProductos
             buscadorRef={buscadorRef}
             busqueda={busqueda}

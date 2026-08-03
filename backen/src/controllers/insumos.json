@@ -2,7 +2,7 @@
   {
     "id": 1,
     "ingrediente": "Masa",
-    "cantidad": 66,
+    "cantidad": 47,
     "unidad": "unidad",
     "costoCompra": 20000,
     "cantidadCompra": 71,
@@ -11,7 +11,7 @@
   {
     "id": 2,
     "ingrediente": "Mozzarella",
-    "cantidad": 21,
+    "cantidad": 17.1,
     "unidad": "kg",
     "costoCompra": 100000,
     "cantidadCompra": 10,
@@ -20,7 +20,7 @@
   {
     "id": 3,
     "ingrediente": "Salsa",
-    "cantidad": 11.58,
+    "cantidad": 11.01,
     "unidad": "kg",
     "costoCompra": 3000,
     "cantidadCompra": 1,
@@ -29,7 +29,7 @@
   {
     "id": 4,
     "ingrediente": "Tomate",
-    "cantidad": 5.8,
+    "cantidad": 4,
     "unidad": "kg",
     "costoCompra": 4000,
     "cantidadCompra": 1,
@@ -38,7 +38,7 @@
   {
     "id": 5,
     "ingrediente": "Jamón",
-    "cantidad": 7.85,
+    "cantidad": 6.5,
     "unidad": "kg",
     "costoCompra": 15000,
     "cantidadCompra": 1,

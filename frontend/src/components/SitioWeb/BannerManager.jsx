@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { apiFetch } from "../../services/api";
+import HeroPreview from "./HeroPreview";
 
 function BannerManager({
   configuracion,
   bannerConfig,
   actualizarBanner,
   guardarConfiguracion,
-})
- {
+  colorPrincipal,
+  colorSecundario,
+}) {
   const [archivoBanner, setArchivoBanner] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
 
@@ -66,27 +68,7 @@ actualizarBanner({
     <article className="sitio-web__tarjeta">
       <h2>🖼 Banner principal</h2>
 
-      {bannerConfig.imagen ? (
-        <div
-          className="sitio-web__banner"
-          style={{
-            backgroundImage: `linear-gradient(
-              rgba(0, 0, 0, ${bannerConfig.opacidad}),
-              rgba(0, 0, 0, ${bannerConfig.opacidad})
-            ), url("${bannerConfig.imagen}")`,
-          }}
-        >
-          <h3>{bannerConfig.titulo}</h3>
-          <p>{bannerConfig.subtitulo}</p>
-
-          <span>
-            {bannerConfig.textoBoton}
-          </span>
-        </div>
-      ) : (
-        <p>No hay una imagen de banner configurada.</p>
-      )}
-      <div
+            <div
   style={{
     display: "flex",
     gap: 15,
@@ -210,7 +192,21 @@ actualizarBanner({
             />
           </label>
         )}
+<label className="sitio-web__interruptor">
+  <span>Mostrar Hero en la web</span>
 
+  <input
+    type="checkbox"
+    checked={
+      bannerConfig.activo !== false
+    }
+    onChange={(e) =>
+      actualizarBanner({
+        activo: e.target.checked,
+      })
+    }
+  />
+</label>
        
         <label className="sitio-web__opacidad">
   <span>
@@ -234,6 +230,20 @@ actualizarBanner({
   />
 </label>
       </div>
+      <HeroPreview
+  bannerConfig={bannerConfig}
+  nombreNegocio={
+    configuracion.negocio?.nombre ||
+    configuracion.nombre
+  }
+  horarios={configuracion.horarios}
+  envio={
+    configuracion.negocio?.envio ||
+    configuracion.envio
+  }
+  colorPrincipal={colorPrincipal}
+  colorSecundario={colorSecundario}
+/>
     </article>
   );
 }

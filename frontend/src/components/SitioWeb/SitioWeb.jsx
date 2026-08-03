@@ -6,6 +6,8 @@ import GeneralManager from "./GeneralManager";
 import LogoManager from "./LogoManager";
 import BannerManager from "./BannerManager";
 import PromocionesManager from "./PromocionesManager";
+import ThemeManager from "./ThemeManager";
+import HomeBuilder from "./HomeBuilder";
 
 import "./sitioWeb.css";
 
@@ -33,6 +35,16 @@ const configuracionInicial = {
     colorSecundario: "#f5f5f5",
     activo: true,
   },
+  secciones: {
+  hero: true,
+  promociones: true,
+  productos: true,
+  categorias: true,
+  nosotros: true,
+  opiniones: false,
+  footer: true,
+},
+    
 
   bannerConfig: {
     imagen: "",
@@ -45,6 +57,7 @@ const configuracionInicial = {
     activo: true,
   },
 };
+
 
 function SitioWeb() {
   const [configuracion, setConfiguracion] = useState(configuracionInicial);
@@ -72,10 +85,7 @@ if (!respuesta.ok) {
 
 const datos = await respuesta.json();
 
-console.log(
-  "Configuración recibida en SitioWeb:",
-  datos
-);
+
    
     const negocioCargado = {
       ...configuracionInicial.negocio,
@@ -126,6 +136,10 @@ console.log(
         datos.activo ??
         true,
     };
+    const seccionesCargadas = {
+  ...configuracionInicial.secciones,
+  ...(datos.secciones || {}),
+};
 
     const bannerCargado = {
       ...configuracionInicial.bannerConfig,
@@ -174,6 +188,7 @@ console.log(
       ...configuracionInicial,
       ...datos,
 
+      secciones: seccionesCargadas,
       negocio: negocioCargado,
       web: webCargada,
       bannerConfig: bannerCargado,
@@ -240,7 +255,21 @@ console.log(
       },
     }));
   }
+  function actualizarSecciones(cambios) {
+  setConfiguracion((anterior) => {
+    const nueva = {
+      ...anterior,
+      secciones: {
+        ...anterior.secciones,
+        ...cambios,
+      },
+    };
 
+    
+
+    return nueva;
+  });
+}
   function actualizarBanner(cambios) {
     setConfiguracion((anterior) => ({
       ...anterior,
@@ -251,64 +280,91 @@ console.log(
     }));
   }
 
-  async function guardarConfiguracion(
-  configuracionGuardar = configuracion
-) {
-    try {
-      setGuardando(true);
-      setMensaje("");
-      setError("");
+  async function guardarConfiguracion() {
+  try {
+    setGuardando(true);
+    setMensaje("");
+    setError("");
 
-      const respuesta = await apiFetch("/configuracion", {
-  method: "PUT",
-  body: JSON.stringify(configuracionGuardar),
-});
+    const configuracionGuardar = {
+      ...configuracion,
 
-if (!respuesta.ok) {
-  const detalle = await respuesta
-    .json()
-    .catch(() => ({}));
+      secciones: {
+        ...configuracionInicial.secciones,
+        ...(configuracion.secciones || {}),
+      },
+    };
+   
 
-  throw new Error(
-    detalle.error ||
-      detalle.mensaje ||
-      `No se pudo guardar. Código: ${respuesta.status}`
-  );
-}
+    const respuesta = await apiFetch(
+      "/configuracion",
+      {
+        method: "PUT",
+        body: JSON.stringify(
+          configuracionGuardar
+        ),
+      }
+    );
 
-const datosGuardados = await respuesta.json();
+    if (!respuesta.ok) {
+      const detalle = await respuesta
+        .json()
+        .catch(() => ({}));
 
-      setConfiguracion((anterior) => ({
-  ...anterior,
-  ...datosGuardados,
-
-  negocio: {
-    ...anterior.negocio,
-    ...(datosGuardados.negocio || {}),
-  },
-
-  web: {
-    ...anterior.web,
-    ...(datosGuardados.web || {}),
-  },
-
-  bannerConfig: {
-    ...anterior.bannerConfig,
-    ...(datosGuardados.bannerConfig || {}),
-  },
-}));
-
-      setMensaje("Configuración guardada correctamente.");
-    } catch (err) {
-      console.error("Error guardando configuración:", err);
-      setError(
-        err.message ||
-          "No se pudo guardar la configuración."
+      throw new Error(
+        detalle.error ||
+          detalle.mensaje ||
+          `No se pudo guardar. Código: ${respuesta.status}`
       );
-    } finally {
-      setGuardando(false);
     }
+
+    const datosGuardados =
+      await respuesta.json();
+
+    
+
+    setConfiguracion((anterior) => ({
+      ...anterior,
+      ...datosGuardados,
+
+      negocio: {
+        ...anterior.negocio,
+        ...(datosGuardados.negocio || {}),
+      },
+
+      web: {
+        ...anterior.web,
+        ...(datosGuardados.web || {}),
+      },
+
+      secciones: {
+        ...configuracionInicial.secciones,
+        ...(datosGuardados.secciones || {}),
+      },
+
+      bannerConfig: {
+        ...anterior.bannerConfig,
+        ...(datosGuardados.bannerConfig || {}),
+      },
+    }));
+
+    setMensaje(
+      "Configuración guardada correctamente."
+    );
+  } catch (err) {
+    console.error(
+      "Error guardando configuración:",
+      err
+    );
+
+    setError(
+      err.message ||
+        "No se pudo guardar la configuración."
+    );
+  } finally {
+    setGuardando(false);
   }
+}
 
   if (cargando) {
     return (
@@ -374,13 +430,33 @@ const datosGuardados = await respuesta.json();
           actualizarWeb={actualizarWeb}
         />
 
-        <BannerManager
+       <BannerManager
   configuracion={configuracion}
   bannerConfig={configuracion.bannerConfig}
   actualizarBanner={actualizarBanner}
   guardarConfiguracion={guardarConfiguracion}
-/>
+  colorPrincipal={
+    configuracion.web?.colorPrincipal ||
+    "#b71c1c"
+  }
+  colorSecundario={
+    configuracion.web?.colorSecundario ||
+    "#f5f5f5"
+  }
+/> 
         <PromocionesManager />
+
+<ThemeManager
+  configuracion={configuracion}
+  actualizarWeb={actualizarWeb}
+/>
+<HomeBuilder
+  secciones={configuracion.secciones}
+  actualizarSecciones={
+    actualizarSecciones
+  }
+/>
+
       </div>
     </section>
   );

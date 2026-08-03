@@ -35,26 +35,30 @@ import {
 
 function Home() {
   const {
-    configuracion,
-    productosDestacados,
-    categorias,
+  configuracion,
 
-    nombreNegocio,
-    direccion,
-    envio,
+  secciones = {
+    hero: true,
+    promociones: true,
+    productos: true,
+    categorias: true,
+    nosotros: true,
+    footer: true,
+  },
 
-    logo,
-    banner,
-
-    enlaceWhatsApp,
-
-    tituloHero,
-    subtituloHero,
-    textoBotonHero,
-
-    estiloHero,
-  } = useWeb();
-
+  productosDestacados,
+  categorias,
+  nombreNegocio,
+  direccion,
+  envio,
+  logo,
+  banner,
+  enlaceWhatsApp,
+  tituloHero,
+  subtituloHero,
+  textoBotonHero,
+  estiloHero,
+} = useWeb();
   const {
     agregarProducto,
   } = useCarrito();
@@ -67,37 +71,47 @@ function Home() {
       />
 
       <main>
-        <Hero
-          titulo={tituloHero}
-          subtitulo={subtituloHero}
-          textoBoton={textoBotonHero}
-          enlaceWhatsApp={enlaceWhatsApp}
-          horarios={configuracion.horarios}
-          envio={envio}
-          estiloHero={estiloHero}
-        />
+   {secciones.hero && (
+  <Hero
+    titulo={tituloHero}
+    subtitulo={subtituloHero}
+    textoBoton={textoBotonHero}
+    enlaceWhatsApp={enlaceWhatsApp}
+    horarios={configuracion.horarios}
+    envio={envio}
+    estiloHero={estiloHero}
+  />
+)}
 
-        <Promociones />
+{secciones.promociones && (
+  <Promociones />
+)}
 
-        <ProductosDestacados
-          productos={productosDestacados}
-          onAgregarProducto={agregarProducto}
-        />
+{secciones.productos && (
+  <ProductosDestacados
+    productos={productosDestacados}
+    onAgregarProducto={agregarProducto}
+  />
+)}
 
-        <Categorias
-          categorias={categorias}
-        />
+{secciones.categorias && (
+  <Categorias categorias={categorias} />
+)}
 
-        <Nosotros
-          banner={banner}
-          enlaceWhatsApp={enlaceWhatsApp}
-        />
+{secciones.nosotros && (
+  <Nosotros
+    banner={banner}
+    enlaceWhatsApp={enlaceWhatsApp}
+  />
+)}
       </main>
 
-      <Footer
-        nombreNegocio={nombreNegocio}
-        direccion={direccion}
-      />
+      {secciones.footer && (
+  <Footer
+    nombreNegocio={nombreNegocio}
+    direccion={direccion}
+  />
+)}
 
       <BotonCarrito />
 

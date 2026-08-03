@@ -116,7 +116,7 @@ router.post("/preferencia", async (req, res) => {
 },
 
 notification_url:
-  "https://masaos-api.onrender.com/api/mercadopago/webhook",
+  "https://masaos-enterprise-api.onrender.com/api/mercadopago/webhook",
 
 back_urls: {
   success: "https://masaos-web.vercel.app/?pago=exitoso",

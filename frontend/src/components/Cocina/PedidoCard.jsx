@@ -1,4 +1,4 @@
-    import PedidoProductos from "./PedidoProductos";
+import PedidoProductos from "./PedidoProductos";
 
 import {
   formatearCronometro,
@@ -14,6 +14,7 @@ function PedidoCard({
   cambiarEstado,
 }) {
   const estado = pedido.estado || "Nuevo";
+
   const prioridad = obtenerPrioridad(
     pedido,
     horaActual
@@ -29,9 +30,47 @@ function PedidoCard({
   const procesando =
     cambiandoPedidoId === pedido.id;
 
+  const clienteEsObjeto =
+    pedido.cliente &&
+    typeof pedido.cliente === "object";
+
+  const nombreCliente = clienteEsObjeto
+    ? pedido.cliente.nombre || "Mostrador"
+    : pedido.cliente || "Mostrador";
+
+  const telefonoCliente = clienteEsObjeto
+    ? pedido.cliente.telefono || ""
+    : pedido.telefono || "";
+
+  const entregaEsObjeto =
+    pedido.entrega &&
+    typeof pedido.entrega === "object";
+
+  const tipoEntrega = entregaEsObjeto
+    ? pedido.entrega.tipo || "Retiro"
+    : pedido.tipoEntrega ||
+      pedido.tipoPedido ||
+      "Retiro";
+
+  const direccionEntrega = entregaEsObjeto
+    ? pedido.entrega.direccion || ""
+    : pedido.direccion || "";
+
+  const localidadEntrega = entregaEsObjeto
+    ? pedido.entrega.localidad || ""
+    : pedido.localidad || "";
+
+  const referenciaEntrega = entregaEsObjeto
+    ? pedido.entrega.referencia || ""
+    : pedido.referencia || "";
+
+  const numeroPedido =
+    pedido.numeroPedido ||
+    `#${pedido.id}`;
+
   function confirmarCancelacion() {
     const confirmar = window.confirm(
-      `¿Cancelar el pedido #${pedido.id}?`
+      `¿Cancelar el pedido ${numeroPedido}?`
     );
 
     if (confirmar) {
@@ -49,7 +88,7 @@ function PedidoCard({
             {formatearHoraPedido(pedido)}
           </span>
 
-          <h3>Pedido #{pedido.id}</h3>
+          <h3>Pedido {numeroPedido}</h3>
         </div>
 
         <div
@@ -68,12 +107,12 @@ function PedidoCard({
       <div className="cocina-pro-datos">
         <p>
           <strong>👤 Cliente:</strong>{" "}
-          {pedido.cliente || "Mostrador"}
+          {nombreCliente}
         </p>
 
         <p>
           <strong>📦 Tipo:</strong>{" "}
-          {pedido.tipoPedido || "Retiro"}
+          {tipoEntrega}
         </p>
 
         {pedido.numeroMesa && (
@@ -83,17 +122,31 @@ function PedidoCard({
           </p>
         )}
 
-        {pedido.telefono && (
+        {telefonoCliente && (
           <p>
             <strong>📞 Teléfono:</strong>{" "}
-            {pedido.telefono}
+            {telefonoCliente}
           </p>
         )}
 
-        {pedido.direccion && (
+        {direccionEntrega && (
           <p>
             <strong>📍 Dirección:</strong>{" "}
-            {pedido.direccion}
+            {direccionEntrega}
+          </p>
+        )}
+
+        {localidadEntrega && (
+          <p>
+            <strong>🏙 Localidad:</strong>{" "}
+            {localidadEntrega}
+          </p>
+        )}
+
+        {referenciaEntrega && (
+          <p>
+            <strong>🧭 Referencia:</strong>{" "}
+            {referenciaEntrega}
           </p>
         )}
       </div>
@@ -102,7 +155,10 @@ function PedidoCard({
 
       {pedido.observaciones && (
         <div className="cocina-pro-observacion-general">
-          <strong>⚠ Observación general</strong>
+          <strong>
+            ⚠ Observación general
+          </strong>
+
           <p>{pedido.observaciones}</p>
         </div>
       )}
@@ -114,7 +170,10 @@ function PedidoCard({
             className="cocina-pro-boton comenzar"
             disabled={procesando}
             onClick={() =>
-              cambiarEstado(pedido, "Preparando")
+              cambiarEstado(
+                pedido,
+                "Preparando"
+              )
             }
           >
             {procesando
@@ -129,7 +188,10 @@ function PedidoCard({
             className="cocina-pro-boton listo"
             disabled={procesando}
             onClick={() =>
-              cambiarEstado(pedido, "Listo")
+              cambiarEstado(
+                pedido,
+                "Listo"
+              )
             }
           >
             {procesando
@@ -144,7 +206,10 @@ function PedidoCard({
             className="cocina-pro-boton entregar"
             disabled={procesando}
             onClick={() =>
-              cambiarEstado(pedido, "Entregado")
+              cambiarEstado(
+                pedido,
+                "Entregado"
+              )
             }
           >
             {procesando
@@ -167,5 +232,3 @@ function PedidoCard({
 }
 
 export default PedidoCard;
-
-    

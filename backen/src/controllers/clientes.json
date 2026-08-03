@@ -70,5 +70,14 @@
     "cantidadPedidos": 1,
     "totalGastado": 14000,
     "ultimaCompra": "2026-07-12"
+  },
+  {
+    "id": 9,
+    "nombre": "Germán Adolfo",
+    "telefono": "+541176192566",
+    "direccion": "Gral. Viamonte 814",
+    "cantidadPedidos": 18,
+    "totalGastado": 410000,
+    "ultimaCompra": "2026-07-29"
   }
 ]
