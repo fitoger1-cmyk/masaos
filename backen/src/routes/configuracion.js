@@ -172,16 +172,13 @@ function leerConfiguracion() {
     ...configuracionInicial.web,
     ...(configuracion.web || {}),
 
-    secciones: {
-  ...configuracionInicial.secciones,
-  ...(configuracion.secciones || {}),
-},
-
+    
     logo:
       configuracion.web?.logo ||
       configuracion.logo ||
       "",
 
+     
     colorPrincipal:
       configuracion.web?.colorPrincipal ||
       configuracion.colorPrincipal ||
@@ -197,6 +194,10 @@ function leerConfiguracion() {
       configuracion.activo ??
       true,
   },
+   secciones: {
+  ...configuracionInicial.secciones,
+  ...(configuracion.secciones || {}),
+},
 
   bannerConfig: {
     ...configuracionInicial.bannerConfig,
