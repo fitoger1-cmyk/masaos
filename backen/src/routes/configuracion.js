@@ -625,14 +625,26 @@ console.log("=======================================");
 
 
     const configuracionActualizada =
-      normalizarConfiguracion(
-        req.body,
-        configuracionAnterior
-      );
+  normalizarConfiguracion(
+    req.body,
+    configuracionAnterior
+  );
 
-    guardarConfiguracion(
-      configuracionActualizada
-    );
+console.log(
+  "SECCIONES NORMALIZADAS:"
+);
+
+console.log(
+  JSON.stringify(
+    configuracionActualizada.secciones,
+    null,
+    2
+  )
+);
+
+guardarConfiguracion(
+  configuracionActualizada
+);
 
     res.json(configuracionActualizada);
 
