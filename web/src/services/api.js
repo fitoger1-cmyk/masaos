@@ -44,3 +44,26 @@ export async function obtenerProductos() {
     ? datos
     : [];
 }
+export async function obtenerPromociones() {
+  const respuesta = await fetch(
+    `${API_URL}/promociones?t=${Date.now()}`,
+    {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    }
+  );
+
+  if (!respuesta.ok) {
+    throw new Error(
+      "No se pudieron cargar las promociones."
+    );
+  }
+
+  const datos = await respuesta.json();
+
+  return Array.isArray(datos)
+    ? datos
+    : [];
+}
