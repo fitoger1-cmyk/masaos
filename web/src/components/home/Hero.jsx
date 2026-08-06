@@ -41,7 +41,7 @@ function Hero({
             rel="noreferrer"
             className="boton boton--secundario"
           >
-            Pedir por WhatsApp
+            WhatsApp para consultas
           </a>
         </div>
 
@@ -65,8 +65,12 @@ function Hero({
           </div>
 
           <div>
-            <strong>{envio}</strong>
-            <span>Envíos en Pilar</span>
+            <strong>
+              {envio === "Sin cargo"
+                ? "Envíos sin cargo"
+                : envio}
+            </strong>
+            <span>En Pilar</span>
           </div>
         </div>
       </div>

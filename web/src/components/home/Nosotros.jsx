@@ -1,8 +1,7 @@
 function Nosotros({
-  banner,
-  enlaceWhatsApp,
+  imagen,
 }) {
-  const estiloVisual = banner
+  const estiloVisual = imagen
     ? {
         backgroundImage: `
           linear-gradient(
@@ -10,7 +9,7 @@ function Nosotros({
             transparent,
             rgba(27, 18, 13, 0.9)
           ),
-          url("${banner}")
+          url("${imagen}")
         `,
       }
     : undefined;
@@ -54,12 +53,10 @@ function Nosotros({
           </p>
 
           <a
-            href={enlaceWhatsApp}
-            target="_blank"
-            rel="noreferrer"
+            href="#menu"
             className="boton boton--principal"
           >
-            Hacer un pedido
+            Ver el menú
           </a>
         </div>
       </div>

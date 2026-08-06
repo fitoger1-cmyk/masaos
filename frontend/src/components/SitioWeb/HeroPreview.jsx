@@ -161,7 +161,7 @@ function HeroPreview({
                 type="button"
                 className="hero-preview__boton-secundario"
               >
-                Pedir por WhatsApp
+                WhatsApp para consultas
               </button>
             </div>
 
@@ -186,10 +186,12 @@ function HeroPreview({
 
               <div>
                 <strong>
-                  {envio || "Sin cargo"}
+                  {(envio || "Sin cargo") === "Sin cargo"
+                    ? "Envíos sin cargo"
+                    : envio}
                 </strong>
 
-                <span>Envíos</span>
+                <span>En Pilar</span>
               </div>
             </div>
           </div>

@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS categorias (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(80) NOT NULL,
+  descripcion TEXT NOT NULL DEFAULT '',
+  imagen TEXT NOT NULL DEFAULT '',
+  icono VARCHAR(20) NOT NULL DEFAULT '',
+  orden INTEGER NOT NULL DEFAULT 0,
+  activo BOOLEAN NOT NULL DEFAULT TRUE,
+  creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  actualizado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS categorias_nombre_unico
+ON categorias (LOWER(nombre));

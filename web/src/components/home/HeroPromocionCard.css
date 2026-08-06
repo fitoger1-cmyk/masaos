@@ -1,0 +1,58 @@
+.hero-promo {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #fff;
+}
+
+.hero-promo__imagen {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.hero-promo:hover .hero-promo__imagen {
+  transform: scale(1.04);
+  filter: brightness(1.05);
+}
+
+.hero-promo__contenido { padding: 18px 20px 20px; }
+
+.hero-promo__badge {
+  display: inline-flex;
+  margin-bottom: 14px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #fff3e0;
+  color: #d84315;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.hero-promo h2 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 2.5vw, 32px);
+  line-height: 1.08;
+}
+
+.hero-promo p { margin: 0; color: #666; line-height: 1.5; }
+.hero-promo__precios { display: flex; gap: 13px; align-items: center; margin: 16px 0; }
+.hero-promo__anterior { color: #999; text-decoration: line-through; }
+.hero-promo strong { color: var(--color-principal); font-size: 29px; }
+.hero-promo__ahorro { margin-bottom: 14px !important; color: #2e7d32 !important; font-weight: 700; }
+.hero-promo .btn { width: 100%; padding: 12px 20px; }
+
+.hero-promo__descuento {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: #d32f2f;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}

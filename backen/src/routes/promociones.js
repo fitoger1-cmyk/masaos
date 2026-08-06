@@ -1,355 +1,146 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
+const {
+  listarPromociones,
+  obtenerPromocion,
+  crearPromocion,
+  actualizarPromocion,
+  eliminarPromocion,
+} = require("../services/promocionesService");
 
 const router = express.Router();
 
-const promocionesPath = path.join(
-  __dirname,
-  "../controllers/promociones.json"
-);
-
-function leerPromociones() {
-  try {
-    if (!fs.existsSync(promocionesPath)) {
-      fs.writeFileSync(
-        promocionesPath,
-        JSON.stringify([], null, 2),
-        "utf-8"
-      );
-
-      return [];
-    }
-
-    const contenido = fs.readFileSync(
-      promocionesPath,
-      "utf-8"
-    );
-
-    if (!contenido.trim()) {
-      return [];
-    }
-
-    const promociones = JSON.parse(contenido);
-
-    return Array.isArray(promociones)
-      ? promociones
-      : [];
-  } catch (error) {
-    console.error(
-      "Error leyendo promociones:",
-      error
-    );
-
-    return [];
-  }
-}
-
-function guardarPromociones(promociones) {
-  fs.writeFileSync(
-    promocionesPath,
-    JSON.stringify(promociones, null, 2),
-    "utf-8"
-  );
-}
-
 function limpiarTexto(valor) {
-  return typeof valor === "string"
-    ? valor.trim()
-    : "";
+  return typeof valor === "string" ? valor.trim() : "";
 }
 
 function convertirNumero(valor) {
   const numero = Number(valor);
-
-  return Number.isFinite(numero)
-    ? numero
-    : 0;
+  return Number.isFinite(numero) ? numero : 0;
 }
 
-function convertirBooleano(
-  valor,
-  valorPredeterminado = false
-) {
-  if (typeof valor === "boolean") {
-    return valor;
-  }
-
-  if (valor === "true") {
-    return true;
-  }
-
-  if (valor === "false") {
-    return false;
-  }
-
-  return valorPredeterminado;
+function convertirBooleano(valor, predeterminado = false) {
+  if (typeof valor === "boolean") return valor;
+  if (typeof valor === "string" && valor.trim().toLowerCase() === "true") return true;
+  if (typeof valor === "string" && valor.trim().toLowerCase() === "false") return false;
+  return predeterminado;
 }
 
 function normalizarPromocion(body = {}, anterior = {}) {
   return {
     ...anterior,
-
-    nombre: limpiarTexto(
-      body.nombre ?? anterior.nombre
-    ),
-
-    descripcion: limpiarTexto(
-      body.descripcion ?? anterior.descripcion
-    ),
-
-    imagen: limpiarTexto(
-      body.imagen ?? anterior.imagen
-    ),
-
-    precioAnterior: convertirNumero(
-      body.precioAnterior ??
-        anterior.precioAnterior
-    ),
-
+    nombre: limpiarTexto(body.nombre ?? anterior.nombre),
+    descripcion: limpiarTexto(body.descripcion ?? anterior.descripcion),
+    imagen: limpiarTexto(body.imagen ?? anterior.imagen),
+    precioAnterior: convertirNumero(body.precioAnterior ?? anterior.precioAnterior),
     precioPromocional: convertirNumero(
-      body.precioPromocional ??
-        anterior.precioPromocional
+      body.precioPromocional ?? anterior.precioPromocional
     ),
-
-    inicio: limpiarTexto(
-      body.inicio ?? anterior.inicio
-    ),
-
-    fin: limpiarTexto(
-      body.fin ?? anterior.fin
-    ),
-
+    inicio: limpiarTexto(body.inicio ?? anterior.inicio),
+    fin: limpiarTexto(body.fin ?? anterior.fin),
     mostrarInicio: convertirBooleano(
       body.mostrarInicio,
       anterior.mostrarInicio ?? true
     ),
-
     mostrarCarrusel: convertirBooleano(
       body.mostrarCarrusel,
       anterior.mostrarCarrusel ?? false
     ),
-
     mostrarDestacados: convertirBooleano(
       body.mostrarDestacados,
       anterior.mostrarDestacados ?? false
     ),
-
     mostrarPopup: convertirBooleano(
       body.mostrarPopup,
       anterior.mostrarPopup ?? false
     ),
-
-    activa: convertirBooleano(
-      body.activa,
-      anterior.activa ?? true
-    ),
-
+    activa: convertirBooleano(body.activa, anterior.activa ?? true),
     actualizadoEn: new Date().toISOString(),
   };
 }
 
-// Listar promociones
-router.get("/", (req, res) => {
-  const promociones = leerPromociones();
-
-  res.json(promociones);
-});
-
-// Obtener una promoción
-router.get("/:id", (req, res) => {
-  const promociones = leerPromociones();
-
-  const promocion = promociones.find(
-    (item) =>
-      String(item.id) === String(req.params.id)
-  );
-
-  if (!promocion) {
-    return res.status(404).json({
-      error: "Promoción no encontrada.",
-    });
-  }
-
-  res.json(promocion);
-});
-
-// Crear promoción
-router.post("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const promociones = leerPromociones();
-
-    const nombre = limpiarTexto(
-      req.body?.nombre
-    );
-
-    if (!nombre) {
-      return res.status(400).json({
-        error:
-          "El nombre de la promoción es obligatorio.",
-      });
-    }
-
-    const nuevaPromocion = normalizarPromocion(
-      req.body
-    );
-
-    nuevaPromocion.id = Date.now();
-    nuevaPromocion.creadoEn =
-      new Date().toISOString();
-
-    promociones.push(nuevaPromocion);
-    guardarPromociones(promociones);
-
-    res.status(201).json(nuevaPromocion);
+    res.json(await listarPromociones());
   } catch (error) {
-    console.error(
-      "Error creando promoción:",
-      error
-    );
-
-    res.status(500).json({
-      error:
-        "No se pudo crear la promoción.",
-    });
+    console.error("Error listando promociones:", error);
+    res.status(500).json({ error: "No se pudieron leer las promociones." });
   }
 });
 
-// Actualizar promoción
-router.put("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
-    const promociones = leerPromociones();
-
-    const indice = promociones.findIndex(
-      (item) =>
-        String(item.id) ===
-        String(req.params.id)
-    );
-
-    if (indice === -1) {
-      return res.status(404).json({
-        error: "Promoción no encontrada.",
-      });
-    }
-
-    const promocionActualizada =
-      normalizarPromocion(
-        req.body,
-        promociones[indice]
-      );
-
-    promocionActualizada.id =
-      promociones[indice].id;
-
-    promocionActualizada.creadoEn =
-      promociones[indice].creadoEn;
-
-    promociones[indice] =
-      promocionActualizada;
-
-    guardarPromociones(promociones);
-
-    res.json(promocionActualizada);
+    const promocion = await obtenerPromocion(req.params.id);
+    if (!promocion) return res.status(404).json({ error: "Promoción no encontrada." });
+    res.json(promocion);
   } catch (error) {
-    console.error(
-      "Error actualizando promoción:",
-      error
-    );
-
-    res.status(500).json({
-      error:
-        "No se pudo actualizar la promoción.",
-    });
+    console.error("Error buscando promoción:", error);
+    res.status(500).json({ error: "No se pudo leer la promoción." });
   }
 });
 
-// Activar o desactivar
-router.patch("/:id/estado", (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const promociones = leerPromociones();
-
-    const indice = promociones.findIndex(
-      (item) =>
-        String(item.id) ===
-        String(req.params.id)
-    );
-
-    if (indice === -1) {
-      return res.status(404).json({
-        error: "Promoción no encontrada.",
-      });
+    const nueva = normalizarPromocion(req.body);
+    if (!nueva.nombre) {
+      return res.status(400).json({ error: "El nombre de la promoción es obligatorio." });
     }
+    if (nueva.precioAnterior < 0 || nueva.precioPromocional < 0) {
+      return res.status(400).json({ error: "Los precios no pueden ser negativos." });
+    }
+    nueva.id = Date.now();
+    nueva.creadoEn = new Date().toISOString();
+    res.status(201).json(await crearPromocion(nueva));
+  } catch (error) {
+    console.error("Error creando promoción:", error);
+    res.status(500).json({ error: "No se pudo crear la promoción." });
+  }
+});
 
-    promociones[indice] = {
-      ...promociones[indice],
+router.put("/:id", async (req, res) => {
+  try {
+    const anterior = await obtenerPromocion(req.params.id);
+    if (!anterior) return res.status(404).json({ error: "Promoción no encontrada." });
 
-      activa: convertirBooleano(
-        req.body?.activa,
-        promociones[indice].activa
-      ),
+    const actualizada = normalizarPromocion(req.body, anterior);
+    actualizada.id = anterior.id;
+    actualizada.creadoEn = anterior.creadoEn;
+    if (!actualizada.nombre) {
+      return res.status(400).json({ error: "El nombre de la promoción es obligatorio." });
+    }
+    if (actualizada.precioAnterior < 0 || actualizada.precioPromocional < 0) {
+      return res.status(400).json({ error: "Los precios no pueden ser negativos." });
+    }
+    res.json(await actualizarPromocion(actualizada));
+  } catch (error) {
+    console.error("Error actualizando promoción:", error);
+    res.status(500).json({ error: "No se pudo actualizar la promoción." });
+  }
+});
 
-      actualizadoEn:
-        new Date().toISOString(),
+router.patch("/:id/estado", async (req, res) => {
+  try {
+    const anterior = await obtenerPromocion(req.params.id);
+    if (!anterior) return res.status(404).json({ error: "Promoción no encontrada." });
+    const actualizada = {
+      ...anterior,
+      activa: convertirBooleano(req.body?.activa, anterior.activa),
+      actualizadoEn: new Date().toISOString(),
     };
-
-    guardarPromociones(promociones);
-
-    res.json(promociones[indice]);
+    res.json(await actualizarPromocion(actualizada));
   } catch (error) {
-    console.error(
-      "Error cambiando estado:",
-      error
-    );
-
-    res.status(500).json({
-      error:
-        "No se pudo cambiar el estado.",
-    });
+    console.error("Error cambiando estado:", error);
+    res.status(500).json({ error: "No se pudo cambiar el estado." });
   }
 });
 
-// Eliminar promoción
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    const promociones = leerPromociones();
-
-    const existe = promociones.some(
-      (item) =>
-        String(item.id) ===
-        String(req.params.id)
-    );
-
-    if (!existe) {
-      return res.status(404).json({
-        error: "Promoción no encontrada.",
-      });
-    }
-
-    const promocionesActualizadas =
-      promociones.filter(
-        (item) =>
-          String(item.id) !==
-          String(req.params.id)
-      );
-
-    guardarPromociones(
-      promocionesActualizadas
-    );
-
-    res.json({
-      mensaje:
-        "Promoción eliminada correctamente.",
-    });
+    const eliminada = await eliminarPromocion(req.params.id);
+    if (!eliminada) return res.status(404).json({ error: "Promoción no encontrada." });
+    res.json({ mensaje: "Promoción eliminada correctamente." });
   } catch (error) {
-    console.error(
-      "Error eliminando promoción:",
-      error
-    );
-
-    res.status(500).json({
-      error:
-        "No se pudo eliminar la promoción.",
-    });
+    console.error("Error eliminando promoción:", error);
+    res.status(500).json({ error: "No se pudo eliminar la promoción." });
   }
 });
 

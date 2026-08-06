@@ -58,6 +58,15 @@ const mercadoPagoRouter =
 require("./routes/mercadoPago");
 const mercadoPagoWebhookRouter =
   require("./routes/mercadoPagoWebhook");
+    const dashboardRouter =
+  require("./routes/dashboard");
+const {
+  inicializarConfiguracionWeb,
+} = require("./database/inicializarConfiguracionWeb");
+const {
+  inicializarCategorias,
+} = require("./database/inicializarCategorias");
+const categoriasRouter = require("./routes/categorias");
 
 const app = express();
 
@@ -275,6 +284,7 @@ app.get("/api/db-health", async (req, res) => {
   }
 });
 app.use("/api/productos", productosRouter);
+app.use("/api/categorias", categoriasRouter);
 app.use(
   "/api/configuracion",
   configuracionRouter
@@ -286,6 +296,23 @@ app.use(
 app.use(
   "/api/promociones",
   promocionesRouter
+);
+app.get("/api/clientes", (req, res) => {
+  res.json(
+    Array.isArray(clientes)
+      ? clientes
+      : []
+  );
+});
+app.locals.dashboardData = {
+  ventas,
+  pedidos,
+  stock,
+  clientes,
+};
+app.use(
+  "/api/dashboard",
+  dashboardRouter
 );
 
 
@@ -661,10 +688,12 @@ const PORT = process.env.PORT || 3000;
 async function iniciarServidor() {
   try {
     await inicializarProductos();
+    await inicializarCategorias();
     await inicializarUsuarios();
     await inicializarVentas();
     await inicializarStock();
     await inicializarCompras();
+    await inicializarConfiguracionWeb();
 
     servidorHttp.listen(
       PORT,

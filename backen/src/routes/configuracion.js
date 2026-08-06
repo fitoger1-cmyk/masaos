@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const { pool } = require("../config/database");
 
 const router = express.Router();
 
@@ -46,6 +47,7 @@ mostrarDestacados: true,
   pedidosYa: true,
   logo: "/imagenes/logo.png",
   banner: "/imagenes/banner.jpg",
+  imagenNosotros: "",
   colorPrincipal: "#b71c1c",
   colorSecundario: "#f5f5f5",
   activo: true,
@@ -235,6 +237,164 @@ function guardarConfiguracion(configuracion) {
     JSON.stringify(configuracion, null, 2),
     "utf8"
   );
+}
+
+async function asegurarConfiguracionWebPostgres() {
+  if (!pool) {
+    return;
+  }
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS configuracion_web (
+      id SMALLINT PRIMARY KEY
+        DEFAULT 1
+        CHECK (id = 1),
+      datos JSONB
+        NOT NULL
+        DEFAULT '{}'::jsonb,
+      configuracion JSONB
+        NOT NULL
+        DEFAULT '{}'::jsonb,
+      actualizado_en TIMESTAMPTZ
+        NOT NULL
+        DEFAULT NOW()
+    )
+  `);
+
+  // Compatibilidad con todas las versiones anteriores de la tabla.
+  await pool.query(`
+    ALTER TABLE configuracion_web
+    ADD COLUMN IF NOT EXISTS datos JSONB
+      NOT NULL
+      DEFAULT '{}'::jsonb
+  `);
+
+  await pool.query(`
+    ALTER TABLE configuracion_web
+    ADD COLUMN IF NOT EXISTS configuracion JSONB
+      NOT NULL
+      DEFAULT '{}'::jsonb
+  `);
+
+  await pool.query(`
+    ALTER TABLE configuracion_web
+    ADD COLUMN IF NOT EXISTS actualizado_en TIMESTAMPTZ
+      NOT NULL
+      DEFAULT NOW()
+  `);
+
+  const configuracionJson =
+    JSON.stringify(leerConfiguracion());
+
+  await pool.query(
+    `
+      INSERT INTO configuracion_web (
+        id,
+        datos,
+        configuracion,
+        actualizado_en
+      )
+      VALUES (
+        1,
+        $1::jsonb,
+        $1::jsonb,
+        NOW()
+      )
+
+      ON CONFLICT (id)
+      DO UPDATE SET
+        datos =
+          CASE
+            WHEN configuracion_web.datos = '{}'::jsonb
+            THEN EXCLUDED.datos
+            ELSE configuracion_web.datos
+          END,
+        configuracion =
+          CASE
+            WHEN configuracion_web.configuracion = '{}'::jsonb
+            THEN EXCLUDED.configuracion
+            ELSE configuracion_web.configuracion
+          END,
+        actualizado_en = NOW()
+    `,
+    [configuracionJson]
+  );
+}
+
+async function leerConfiguracionPersistida() {
+  if (!pool) {
+    return leerConfiguracion();
+  }
+
+  try {
+    await asegurarConfiguracionWebPostgres();
+
+    const resultado = await pool.query(`
+      SELECT
+        CASE
+          WHEN configuracion <> '{}'::jsonb
+          THEN configuracion
+          ELSE datos
+        END AS configuracion
+      FROM configuracion_web
+      WHERE id = 1
+    `);
+
+    return (
+      resultado.rows[0]?.configuracion ||
+      leerConfiguracion()
+    );
+  } catch (error) {
+    console.error(
+      "PostgreSQL configuracion_web no disponible:",
+      error.message
+    );
+
+    return leerConfiguracion();
+  }
+}
+
+async function guardarConfiguracionPersistida(configuracion) {
+  guardarConfiguracion(configuracion);
+
+  if (!pool) {
+    return;
+  }
+
+  try {
+    await asegurarConfiguracionWebPostgres();
+
+    const configuracionJson =
+      JSON.stringify(configuracion);
+
+    await pool.query(
+      `
+        INSERT INTO configuracion_web (
+          id,
+          datos,
+          configuracion,
+          actualizado_en
+        )
+        VALUES (
+          1,
+          $1::jsonb,
+          $1::jsonb,
+          NOW()
+        )
+        ON CONFLICT (id)
+        DO UPDATE SET
+          datos = EXCLUDED.datos,
+          configuracion = EXCLUDED.configuracion,
+          actualizado_en = NOW()
+      `,
+      [configuracionJson]
+    );
+  } catch (error) {
+    console.error(
+      "No se pudo guardar en configuracion_web:",
+      error.message
+    );
+  }
 }
 
 function convertirBooleano(
@@ -428,6 +588,12 @@ mostrarDestacados: convertirBooleano(
   configuracionAnterior.banner
 ),
 
+    imagenNosotros: limpiarTexto(
+      body.imagenNosotros ??
+        configuracionAnterior.imagenNosotros ??
+        ""
+    ),
+
     colorPrincipal: limpiarTexto(
       body.colorPrincipal
     ),
@@ -589,22 +755,28 @@ secciones: {
 }
 
 // GET /api/configuracion
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const configuracion =
-      leerConfiguracion();
+      await leerConfiguracionPersistida();
 
     res.json(configuracion);
   } catch (error) {
+    console.error(
+      "Error cargando configuracion_web:",
+      error
+    );
+
     res.status(500).json({
       error:
+        error.message ||
         "No se pudo leer la configuración.",
     });
   }
 });
 
 // PUT /api/configuracion
-router.put("/", (req, res) => {
+router.put("/", async (req, res) => {
   try {
     const errorValidacion =
       validarConfiguracion(req.body);
@@ -616,7 +788,7 @@ router.put("/", (req, res) => {
     }
 
     const configuracionAnterior =
-      leerConfiguracion();
+      await leerConfiguracionPersistida();
 
       
 
@@ -628,7 +800,7 @@ router.put("/", (req, res) => {
 
 
 
-guardarConfiguracion(
+await guardarConfiguracionPersistida(
   configuracionActualizada
 );
 
@@ -648,10 +820,10 @@ guardarConfiguracion(
 });
 
 // PATCH /api/configuracion/estado
-router.patch("/estado", (req, res) => {
+router.patch("/estado", async (req, res) => {
   try {
     const configuracion =
-      leerConfiguracion();
+      await leerConfiguracionPersistida();
 
     configuracion.activo =
       convertirBooleano(
@@ -662,7 +834,7 @@ router.patch("/estado", (req, res) => {
     configuracion.actualizadoEn =
       new Date().toISOString();
 
-    guardarConfiguracion(configuracion);
+    await guardarConfiguracionPersistida(configuracion);
 
     res.json({
       ok: true,

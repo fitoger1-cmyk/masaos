@@ -1,0 +1,18 @@
+.container{
+
+width:min(
+100% - 40px,
+var(--ancho-contenedor)
+);
+
+margin-inline:auto;
+
+}
+
+.section{
+
+padding:
+var(--espacio-16)
+0;
+
+}

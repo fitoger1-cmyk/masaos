@@ -8,6 +8,7 @@ import BannerManager from "./BannerManager";
 import PromocionesManager from "./PromocionesManager";
 import ThemeManager from "./ThemeManager";
 import HomeBuilder from "./HomeBuilder";
+import NosotrosManager from "./NosotrosManager";
 
 import "./sitioWeb.css";
 
@@ -21,6 +22,7 @@ const configuracionInicial = {
 
   logo: "",
   banner: "",
+  imagenNosotros: "",
 
   negocio: {
     nombre: "",
@@ -280,6 +282,13 @@ const datos = await respuesta.json();
     }));
   }
 
+  function actualizarImagenNosotros(imagenNosotros) {
+    setConfiguracion((anterior) => ({
+      ...anterior,
+      imagenNosotros,
+    }));
+  }
+
   async function guardarConfiguracion() {
   try {
     setGuardando(true);
@@ -444,6 +453,10 @@ const datos = await respuesta.json();
     "#f5f5f5"
   }
 /> 
+        <NosotrosManager
+          imagenNosotros={configuracion.imagenNosotros}
+          actualizarImagenNosotros={actualizarImagenNosotros}
+        />
         <PromocionesManager />
 
 <ThemeManager

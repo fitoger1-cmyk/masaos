@@ -13,6 +13,7 @@ import HeaderEnterprise from "./Dashboard/HeaderEnterprise";
 import LiveStatusBar from "./Dashboard/LiveStatusBar";
 import CentroActividad from "./Dashboard/CentroActividad";
 import { API_URL } from "../config/api";
+import DashboardComercial from "./Dashboard/DashboardComercial";
 
 
 function obtenerSaludo() {
@@ -162,6 +163,7 @@ function DashboardEnterpriseV2({
             productos={metricas.productosMasVendidos}
           />
         </div>
+        <DashboardComercial />
       </section>
 
       <section className="dashboard-v2-seccion">

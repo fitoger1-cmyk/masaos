@@ -62,9 +62,58 @@ p {
 }
 .promociones-web__grilla {
   display: grid;
-  grid-template-columns:
-    repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
+}
+
+.promociones-web__grilla--una {
+  grid-template-columns: 1fr;
+}
+
+.promociones-web__grilla--una .promociones-web__card {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.25fr) minmax(280px, 0.75fr);
+}
+
+.promociones-web__grilla--una .promociones-web__imagen,
+.promociones-web__grilla--una .promociones-web__sin-imagen {
+  height: 100%;
+  min-height: 340px;
+}
+
+.promociones-web__grilla--dos {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.promociones-web__grilla--carrusel {
+  display: flex;
+  overflow-x: auto;
+  padding: 4px 2px 24px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.promociones-web__grilla--carrusel .promociones-web__card {
+  flex: 0 0 min(380px, 86vw);
+  scroll-snap-align: start;
+}
+
+.promociones-web__controles {
+  display: flex;
+  gap: 10px;
+}
+
+.promociones-web__controles button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-principal, #b71c1c);
+  color: #fff;
+  font-size: 21px;
+  font-weight: 800;
 }
 
 .promociones-web__card {
@@ -172,8 +221,18 @@ p {
 }
 
 @media (max-width: 600px) {
-  .promociones-web__grilla {
+  .promociones-web__grilla--una,
+  .promociones-web__grilla--dos {
     grid-template-columns: 1fr;
+  }
+
+  .promociones-web__grilla--una .promociones-web__card {
+    display: block;
+  }
+
+  .promociones-web__grilla--una .promociones-web__imagen,
+  .promociones-web__grilla--una .promociones-web__sin-imagen {
+    min-height: 210px;
   }
 
   .promociones-web__imagen {

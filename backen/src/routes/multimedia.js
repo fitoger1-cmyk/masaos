@@ -14,6 +14,8 @@ cloudinary.config({
 const tiposPermitidos = [
   "logo",
   "banner",
+  "nosotros",
+  "categoria",
   "producto",
 ];
 
@@ -72,6 +74,10 @@ function obtenerCarpeta(tipo) {
     return "masaos/productos";
   }
 
+  if (tipo === "categoria") {
+    return "masaos/categorias";
+  }
+
   return "masaos/configuracion";
 }
 
@@ -84,6 +90,10 @@ function obtenerNombrePublico(tipo) {
 
   if (tipo === "banner") {
     return `banner-principal-${marcaTiempo}`;
+  }
+
+  if (tipo === "nosotros") {
+    return `nosotros-${marcaTiempo}`;
   }
 
   return undefined;
@@ -113,6 +123,7 @@ function subirBufferACloudinary(
 
 // POST /api/multimedia/logo
 // POST /api/multimedia/banner
+// POST /api/multimedia/nosotros
 // POST /api/multimedia/producto
 router.post(
   "/:tipo",

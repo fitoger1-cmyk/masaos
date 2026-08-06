@@ -67,3 +67,21 @@ export async function obtenerPromociones() {
     ? datos
     : [];
 }
+export async function obtenerCategorias() {
+  const respuesta = await fetch(
+    `${API_URL}/categorias?t=${Date.now()}`,
+    {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    }
+  );
+
+  if (!respuesta.ok) {
+    throw new Error(
+      "No se pudieron cargar las categorías."
+    );
+  }
+
+  const datos = await respuesta.json();
+  return Array.isArray(datos) ? datos : [];
+}

@@ -7,6 +7,8 @@ import {
 
 function Productos({
   productos = [],
+  categorias = [],
+  recargarCategorias,
   recargarProductos,
 }) {
   const [productoEditando, setProductoEditando] =
@@ -185,6 +187,29 @@ setProductoEditando(null);
     }
   }
 
+  async function crearCategoriaRapida() {
+    const nombre = window.prompt(
+      "Nombre de la nueva categoría (ejemplo: Empanadas)"
+    )?.trim();
+
+    if (!nombre) return;
+
+    try {
+      setError("");
+      const respuesta = await fetch(`${API_URL}/categorias`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, activo: true }),
+      });
+      const datos = await respuesta.json();
+      if (!respuesta.ok) throw new Error(datos.error || "No se pudo crear la categoría.");
+      await recargarCategorias?.();
+      setProductoEditando((anterior) => ({ ...anterior, categoria: datos.nombre }));
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   async function eliminarProducto(id) {
     const confirmar = window.confirm(
       "¿Eliminar este producto?"
@@ -246,7 +271,8 @@ setProductoEditando(null);
           setProductoEditando({
             id: null,
             nombre: "",
-            categoria: "Pizza",
+            categoria:
+              categorias.find((item) => item.activo !== false)?.nombre || "Pizza",
             descripcion: "",
             imagen: "",
             precio: 0,
@@ -367,32 +393,28 @@ setProductoEditando(null);
 
             <select
               value={productoEditando.categoria}
-              onChange={(evento) =>
+              onChange={(evento) => {
+                if (evento.target.value === "__nueva__") {
+                  crearCategoriaRapida();
+                  return;
+                }
                 setProductoEditando({
                   ...productoEditando,
                   categoria: evento.target.value,
-                })
-              }
+                });
+              }}
             >
-              <option value="Pizza">
-                Pizza
-              </option>
-
-              <option value="Focaccia">
-                Focaccia
-              </option>
-
-              <option value="Postre">
-                Postre
-              </option>
-
-              <option value="Bebida">
-                Bebida
-              </option>
-
-              <option value="Adicional">
-                Adicional
-              </option>
+              {categorias
+                .filter((categoria) => categoria.activo !== false || categoria.nombre === productoEditando.categoria)
+                .map((categoria) => (
+                  <option key={categoria.id} value={categoria.nombre}>
+                    {categoria.icono ? `${categoria.icono} ` : ""}{categoria.nombre}
+                  </option>
+                ))}
+              {!categorias.some((categoria) => categoria.nombre === productoEditando.categoria) && productoEditando.categoria && (
+                <option value={productoEditando.categoria}>{productoEditando.categoria}</option>
+              )}
+              <option value="__nueva__">➕ Crear nueva categoría...</option>
             </select>
 
             <label>Descripción</label>

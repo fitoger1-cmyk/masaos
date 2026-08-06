@@ -3,6 +3,8 @@ import ProductoCard from "../ui/ProductoCard";
 function ProductosDestacados({
   productos,
   onAgregarProducto,
+  categoriaSeleccionada,
+  limpiarCategoria,
 }) {
   return (
     <section
@@ -16,7 +18,9 @@ function ProductosDestacados({
               Nuestros favoritos
             </p>
 
-            <h2>Productos destacados</h2>
+            <h2>
+              {categoriaSeleccionada || "Productos destacados"}
+            </h2>
 
             <p>
               Productos cargados directamente
@@ -27,8 +31,11 @@ function ProductosDestacados({
           <button
             type="button"
             className="boton boton--outline"
+            onClick={categoriaSeleccionada ? limpiarCategoria : undefined}
           >
-            Ver menú completo
+            {categoriaSeleccionada
+              ? "Ver todos"
+              : "Ver menú completo"}
           </button>
         </div>
 

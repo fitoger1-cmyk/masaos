@@ -5,6 +5,7 @@ import "./App.css";
 
 import Ventas from "./components/Ventas";
 import Productos from "./components/Productos";
+import Categorias from "./components/Categorias";
 import Caja from "./components/Caja";
 import Stock from "./components/Stock";
 import Compras from "./components/Compras";
@@ -37,6 +38,7 @@ const permisosPorRol = {
   "cocina",
   "delivery",
   "productos",
+  "categorias",
   "ventas",
   "usuarios",
   "stock",
@@ -100,6 +102,10 @@ const menuCompleto = [
   {
     pantalla: "productos",
     texto: "🍕 Productos",
+  },
+  {
+    pantalla: "categorias",
+    texto: "🗂️ Categorías",
   },
   {
     pantalla: "ventas",
@@ -225,6 +231,9 @@ const [
   const [productos, setProductos] =
     useState([]);
 
+  const [categorias, setCategorias] =
+    useState([]);
+
   const [ventas, setVentas] =
     useState([]);
 
@@ -270,6 +279,7 @@ const [
   try {
     const [
       productosNuevos,
+      categoriasNuevas,
       ventasNuevas,
       usuariosNuevos,
       stockNuevo,
@@ -279,6 +289,7 @@ const [
       produccionNueva,
     ] = await Promise.all([
       obtenerLista("productos"),
+      obtenerLista("categorias"),
       obtenerLista("ventas"),
       obtenerLista("usuarios"),
       obtenerLista("stock"),
@@ -289,6 +300,7 @@ const [
     ]);
 
     setProductos(productosNuevos);
+    setCategorias(categoriasNuevas);
     setVentas(ventasNuevas);
     setUsuarios(usuariosNuevos);
     setStock(stockNuevo);
@@ -539,8 +551,17 @@ if (verificandoSesion) {
         {pantalla === "productos" && (
           <Productos
   productos={productos}
+  categorias={categorias}
+  recargarCategorias={cargarDatosPrincipales}
   recargarProductos={cargarDatosPrincipales}
 />
+        )}
+
+        {pantalla === "categorias" && (
+          <Categorias
+            categorias={categorias}
+            recargarCategorias={cargarDatosPrincipales}
+          />
         )}
 
         {pantalla === "ventas" && (

@@ -48,11 +48,13 @@ function Home() {
 
   productosDestacados,
   categorias,
+  categoriaSeleccionada,
+  setCategoriaSeleccionada,
   nombreNegocio,
   direccion,
   envio,
   logo,
-  banner,
+  imagenNosotros,
   enlaceWhatsApp,
   tituloHero,
   subtituloHero,
@@ -87,21 +89,25 @@ function Home() {
   <Promociones />
 )}
 
+{secciones.categorias && (
+  <Categorias
+    categorias={categorias}
+    onSeleccionar={setCategoriaSeleccionada}
+  />
+)}
+
 {secciones.productos && (
   <ProductosDestacados
     productos={productosDestacados}
+    categoriaSeleccionada={categoriaSeleccionada}
+    limpiarCategoria={() => setCategoriaSeleccionada("")}
     onAgregarProducto={agregarProducto}
   />
 )}
 
-{secciones.categorias && (
-  <Categorias categorias={categorias} />
-)}
-
 {secciones.nosotros && (
   <Nosotros
-    banner={banner}
-    enlaceWhatsApp={enlaceWhatsApp}
+    imagen={imagenNosotros}
   />
 )}
       </main>

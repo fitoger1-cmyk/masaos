@@ -29,7 +29,7 @@ function obtenerIcono(categoria) {
   return "🍕";
 }
 
-function Categorias({ categorias }) {
+function Categorias({ categorias, onSeleccionar }) {
   return (
     <section className="seccion seccion--categorias">
       <div className="contenedor">
@@ -44,23 +44,44 @@ function Categorias({ categorias }) {
         </div>
 
         <div className="categorias-grid">
-          {categorias.map((categoria) => (
+          {categorias.map((categoria) => {
+            const nombre =
+              typeof categoria === "string"
+                ? categoria
+                : categoria.nombre;
+            const imagen =
+              typeof categoria === "string"
+                ? ""
+                : categoria.imagen;
+            const icono =
+              typeof categoria === "string"
+                ? obtenerIcono(nombre)
+                : categoria.icono;
+
+            return (
             <a
               href="#menu"
               className="categoria-card"
-              key={categoria}
+              key={nombre}
+              style={
+                imagen
+                  ? {
+                      backgroundImage: `linear-gradient(145deg, rgba(32, 22, 17, 0.42), rgba(32, 22, 17, 0.9)), url("${imagen}")`,
+                    }
+                  : undefined
+              }
+              onClick={() => onSeleccionar?.(nombre)}
             >
-              <span>
-                {obtenerIcono(categoria)}
-              </span>
+              {icono && <span>{icono}</span>}
 
-              <strong>{categoria}</strong>
+              <strong>{nombre}</strong>
 
               <small>
-                Productos artesanales
+                {categoria.descripcion || "Productos artesanales"}
               </small>
             </a>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

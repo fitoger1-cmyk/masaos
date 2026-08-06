@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "nombre": "Pizza",
+    "descripcion": "Pizzas artesanales",
+    "imagen": "",
+    "icono": "🍕",
+    "orden": 1,
+    "activo": true
+  },
+  {
+    "id": 2,
+    "nombre": "Focaccia",
+    "descripcion": "Focaccias y sándwiches",
+    "imagen": "",
+    "icono": "🥪",
+    "orden": 2,
+    "activo": true
+  },
+  {
+    "id": 3,
+    "nombre": "Postre",
+    "descripcion": "Postres y pastelería",
+    "imagen": "",
+    "icono": "🍰",
+    "orden": 3,
+    "activo": true
+  },
+  {
+    "id": 4,
+    "nombre": "Bebida",
+    "descripcion": "Bebidas",
+    "imagen": "",
+    "icono": "🥤",
+    "orden": 4,
+    "activo": true
+  },
+  {
+    "id": 5,
+    "nombre": "Adicional",
+    "descripcion": "Adicionales y extras",
+    "imagen": "",
+    "icono": "➕",
+    "orden": 5,
+    "activo": true
+  }
+]

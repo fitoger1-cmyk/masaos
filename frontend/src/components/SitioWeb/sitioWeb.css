@@ -123,6 +123,40 @@
   color: #b71c1c;
 }
 
+.sitio-web__nosotros-preview {
+  display: block;
+  width: min(100%, 760px);
+  height: clamp(240px, 36vw, 420px);
+  margin: 20px 0;
+  border-radius: 18px;
+  object-fit: cover;
+}
+
+.sitio-web__carga-imagen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.sitio-web__campo-completo {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.sitio-web__campo-completo input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sitio-web__error-campo {
+  margin: 12px 0 0;
+  color: #b71c1c;
+  font-weight: 600;
+}
+
 @media (max-width: 700px) {
   .sitio-web__encabezado {
     align-items: stretch;

@@ -1,7 +1,15 @@
+import { useEffect, useState } from "react";
+
 function Navbar({
   nombreNegocio,
   logo,
 }) {
+  const [logoConError, setLogoConError] = useState(false);
+
+  useEffect(() => {
+    setLogoConError(false);
+  }, [logo]);
+
   return (
     <header className="navbar">
       <div className="navbar__contenido">
@@ -10,10 +18,11 @@ function Navbar({
           className="marca"
         >
           <div className="marca__logo">
-            {logo ? (
+            {logo && !logoConError ? (
               <img
                 src={logo}
                 alt={`Logo de ${nombreNegocio}`}
+                onError={() => setLogoConError(true)}
               />
             ) : (
               <span>🍕</span>

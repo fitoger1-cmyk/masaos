@@ -51,3 +51,16 @@ export async function apiFetch(
 
   return respuesta;
 }
+export async function obtenerDashboard() {
+  const respuesta = await fetch(
+    `${API_URL}/dashboard`
+  );
+
+  if (!respuesta.ok) {
+    throw new Error(
+      "No se pudo cargar el dashboard."
+    );
+  }
+
+  return respuesta.json();
+}

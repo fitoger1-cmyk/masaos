@@ -7,6 +7,7 @@ import {
 
 import {
   obtenerConfiguracion,
+  obtenerCategorias,
   obtenerProductos,
 } from "../services/api";
 
@@ -30,6 +31,7 @@ const configuracionInicial = {
 
   logo: "",
   banner: "",
+  imagenNosotros: "",
 
   negocio: {
     nombre: "",
@@ -138,6 +140,12 @@ export function WebProvider({
     setProductos,
   ] = useState([]);
 
+  const [categoriasConfiguradas, setCategoriasConfiguradas] =
+    useState([]);
+
+  const [categoriaSeleccionada, setCategoriaSeleccionada] =
+    useState("");
+
   const [
     cargando,
     setCargando,
@@ -156,9 +164,11 @@ export function WebProvider({
       const [
         configuracionRecibida,
         productosRecibidos,
+        categoriasRecibidas,
       ] = await Promise.all([
         obtenerConfiguracion(),
         obtenerProductos(),
+        obtenerCategorias(),
       ]);
 
       setConfiguracion(
@@ -171,6 +181,12 @@ export function WebProvider({
         productosRecibidos.filter(
           (producto) =>
             producto.activo !== false
+        )
+      );
+
+      setCategoriasConfiguradas(
+        categoriasRecibidas.filter(
+          (categoria) => categoria.activo !== false
         )
       );
     } catch (err) {
@@ -263,12 +279,38 @@ export function WebProvider({
 
   const productosDestacados =
     useMemo(() => {
-      return productos.slice(0, 6);
-    }, [productos]);
+      if (!categoriaSeleccionada) {
+        return productos.slice(0, 6);
+      }
+
+      return productos.filter(
+        (producto) =>
+          normalizarCategoria(producto.categoria) ===
+          normalizarCategoria(categoriaSeleccionada)
+      );
+    }, [productos, categoriaSeleccionada]);
 
   const categorias =
     useMemo(() => {
       const categoriasUnicas = [];
+
+      categoriasConfiguradas.forEach((categoriaConfigurada) => {
+        const productoCategoria = productos.find(
+          (producto) =>
+            normalizarCategoria(producto.categoria) ===
+            normalizarCategoria(categoriaConfigurada.nombre)
+        );
+
+        if (!productoCategoria) return;
+
+        categoriasUnicas.push({
+          ...categoriaConfigurada,
+          imagen:
+            categoriaConfigurada.imagen ||
+            productoCategoria.imagen ||
+            "",
+        });
+      });
 
       productos.forEach(
         (producto) => {
@@ -281,10 +323,10 @@ export function WebProvider({
           }
 
           const yaExiste =
-            categoriasUnicas.some(
+            categoriasUnicas.find(
               (categoriaGuardada) =>
                 normalizarCategoria(
-                  categoriaGuardada
+                  categoriaGuardada.nombre
                 ) ===
                 normalizarCategoria(
                   categoria
@@ -292,15 +334,21 @@ export function WebProvider({
             );
 
           if (!yaExiste) {
-            categoriasUnicas.push(
-              categoria
-            );
+            categoriasUnicas.push({
+              nombre: categoria,
+              imagen: producto.imagen || "",
+            });
+          } else if (
+            producto.imagen &&
+            !yaExiste.imagen
+          ) {
+            yaExiste.imagen = producto.imagen;
           }
         }
       );
 
       return categoriasUnicas;
-    }, [productos]);
+    }, [productos, categoriasConfiguradas]);
 
   const estiloWeb = {
     "--color-principal":
@@ -310,17 +358,20 @@ export function WebProvider({
       colorSecundario,
   };
 
+  const opacidadBannerRecibida = Number(
+    configuracion.bannerConfig?.opacidad ?? 0.55
+  );
+
+  const opacidadBanner = Number.isFinite(
+    opacidadBannerRecibida
+  )
+    ? Math.min(Math.max(opacidadBannerRecibida, 0), 1)
+    : 0.55;
+
   const estiloHero = banner
     ? {
-        backgroundImage: `
-          linear-gradient(
-            90deg,
-            rgba(18, 12, 9, 0.94) 0%,
-            rgba(18, 12, 9, 0.70) 52%,
-            rgba(18, 12, 9, 0.38) 100%
-          ),
-          url("${banner}")
-        `,
+        backgroundImage: `url("${banner}")`,
+        "--opacidad-banner": opacidadBanner,
       }
     : undefined;
 
@@ -334,6 +385,8 @@ export function WebProvider({
     productos,
     productosDestacados,
     categorias,
+    categoriaSeleccionada,
+    setCategoriaSeleccionada,
 
     cargando,
     error,
@@ -344,6 +397,8 @@ export function WebProvider({
     envio,
     logo,
     banner,
+    imagenNosotros:
+      configuracion.imagenNosotros || "",
 
     colorPrincipal,
     colorSecundario,

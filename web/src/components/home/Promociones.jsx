@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -99,6 +100,7 @@ function estaVigente(promocion) {
 }
 
 function Promociones() {
+  const carruselRef = useRef(null);
   const [
     promociones,
     setPromociones,
@@ -175,6 +177,25 @@ function Promociones() {
     return null;
   }
 
+  const tipoPresentacion =
+    promociones.length === 1
+      ? "una"
+      : promociones.length === 2
+        ? "dos"
+        : "carrusel";
+
+  function desplazarCarrusel(direccion) {
+    carruselRef.current?.scrollBy({
+      left:
+        direccion *
+        Math.max(
+          carruselRef.current.clientWidth * 0.85,
+          280
+        ),
+      behavior: "smooth",
+    });
+  }
+
   return (
     <section
       id="promociones"
@@ -191,9 +212,31 @@ function Promociones() {
               Promociones para aprovechar
             </h2>
           </div>
+
+          {tipoPresentacion === "carrusel" && (
+            <div className="promociones-web__controles">
+              <button
+                type="button"
+                onClick={() => desplazarCarrusel(-1)}
+                aria-label="Promoción anterior"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                onClick={() => desplazarCarrusel(1)}
+                aria-label="Promoción siguiente"
+              >
+                →
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="promociones-web__grilla">
+        <div
+          ref={carruselRef}
+          className={`promociones-web__grilla promociones-web__grilla--${tipoPresentacion}`}
+        >
           {promociones.map(
             (promocion) => {
               const descuento =
